@@ -1,6 +1,8 @@
 ---
 name: code
-version: "0.1.0"
+version: "0.2.0"
+last_verified: "2026-04-17"
+valid_until: "2026-10-17"
 description: "소프트웨어 엔지니어링 메타 라우터 — 디버깅·아키텍처·설계·리질리언스·진화·팀 구조 12개 프레임워크에서 상황에 맞는 것을 자동 선택. 토스·카카오·쿠팡·네이버 같은 실전 성장 시나리오, 금감원·전자금융업·PG 연동 같은 한국 금융 맥락, 레거시 교체·팀 확장까지 커버. 과적용 경고·단계별 디폴트·Inverse Conway Maneuver 포함."
 tools: ["Read", "Write", "Edit", "Skill"]
 dependencies:

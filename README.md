@@ -41,3 +41,12 @@ software-framework/
 - 프레임워크 선택 (React vs Vue, Django vs Rails 등)
 - 비즈니스·제품 전략 (→ `think`)
 - 협상·커뮤니케이션 (→ `howtotalk`)
+
+## 메타
+
+- `last_verified: 2026-04-17`
+- `valid_until: 2027-04-17` — 아키텍처·설계 원칙은 수명이 길어 1년 주기 재검증. 단 Team Topologies·Resilience Pattern 같은 최근 실무 항목은 필요 시 조기 갱신.
+
+## 면책
+
+이 레포는 설계 보조 도구이며, 특정 기술 스택·벤더·프레임워크 선택을 대신하지 않는다. 실제 시스템은 팀 규모·도메인·규제(금감원·전자금융업 등)에 따라 트레이드오프가 달라진다.
