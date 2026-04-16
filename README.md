@@ -30,7 +30,7 @@ software-framework/
 ## 사용
 
 ```
-/software-framework <상황 설명>
+/code <상황 설명>
 ```
 
 메타 라우터가 문제 신호를 매핑해 1~3개 프레임워크를 선택, Skill 툴로 실행·합성.
