@@ -1,0 +1,9 @@
+# 개인·내부 시나리오 — 커밋 금지
+scenarios/
+.private/
+*.local.md
+
+# 시스템
+.DS_Store
+*.swp
+*.swo
