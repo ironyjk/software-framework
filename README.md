@@ -56,3 +56,7 @@ The meta-router maps problem signals and selects 1–3 frameworks, then executes
 ## Disclaimer
 
 This repo is a design-support tool; it does not substitute for choosing a specific tech stack, vendor, or framework. Real systems involve trade-offs that vary by team size, domain, and regulations (e.g., Korean FSS electronic-finance requirements).
+
+## License
+
+CC-BY-NC-4.0 — see [LICENSE](LICENSE) for details. Commercial licensing: ironyjk@gmail.com
