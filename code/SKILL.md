@@ -3,7 +3,7 @@ name: code
 version: "0.2.0"
 last_verified: "2026-04-17"
 valid_until: "2026-10-17"
-description: "Software engineering meta-router — auto-selects from 12 frameworks (debugging, architecture, design, resilience, evolution, team topology). Real Korean growth scenarios (Toss, Kakao, Coupang, Naver), Korean financial regulatory context (FSC, 전자금융업, PG integration), legacy replacement, and team expansion. Includes anti-pattern warnings, stage-based defaults, and the Inverse Conway Maneuver."
+description: "Software engineering meta-router — auto-selects from 15 frameworks (debugging, architecture, design, resilience, evolution, team topology, security, CI/CD, API design). Real Korean growth scenarios (Toss, Kakao, Coupang, Naver), Korean financial regulatory context (FSC, 전자금융업, PG integration), legacy replacement, and team expansion. Includes anti-pattern warnings, stage-based defaults, and the Inverse Conway Maneuver."
 tools: ["Read", "Write", "Edit", "Skill"]
 dependencies:
   - scientific-debugging
@@ -18,11 +18,14 @@ dependencies:
   - resilience-patterns
   - strangler-fig
   - team-topologies
+  - owasp-security
+  - cicd-basics
+  - api-design
 ---
 
 # Software Engineering Meta-Router
 
-You are a software engineering decision meta-router. When a user describes their situation:
+You are a software engineering decision meta-router. When a user describes their situation (15 frameworks available):
 
 1. **Classify the problem type** — use the Detection Matrix
 2. **Select frameworks** — 1~3. Don't throw 5 at a simple problem.
@@ -67,6 +70,9 @@ If information is insufficient, ask stage, scale, and domain sensitivity *first*
 | "Team growing but speed dropping", "cross-team coordination cost", "team boundary" | **team-topologies** | modular-monolith |
 | "Should we create a new team?", "do we need a platform team?" | **team-topologies** | — |
 | "CTO bottleneck", "all decisions escalate" | **team-topologies** | — |
+| "Is this secure?", "SQL injection", "XSS", "API key exposed", "authentication" | **owasp-security** | twelve-factor |
+| "How to deploy?", "CI/CD", "Docker", "GitHub Actions", "Vercel" | **cicd-basics** | twelve-factor |
+| "API design", "REST", "endpoint structure", "status codes", "versioning" | **api-design** | hexagonal |
 
 ## Multi-framework triggers
 

@@ -1,6 +1,6 @@
 {
   "name": "software-framework",
-  "description": "Software engineering meta-router — 12 frameworks (Scientific Debugging, Bisection, Observability, Hexagonal, DDD, Event Sourcing/CQRS, Modular Monolith, SOLID, 12-Factor, Resilience Patterns, Strangler Fig, Team Topologies). Built on real Korean growth scenarios (Toss, Kakao, Coupang, Naver) and regulatory context (FSC, 전자금융업, PG). Invoke /code.",
+  "description": "Software engineering meta-router — 15 frameworks (Scientific Debugging, Bisection, Observability, Hexagonal, DDD, Event Sourcing/CQRS, Modular Monolith, SOLID, 12-Factor, Resilience Patterns, Strangler Fig, Team Topologies, OWASP Security, CI/CD Basics, API Design). Built on real Korean growth scenarios (Toss, Kakao, Coupang, Naver) and regulatory context (FSC, 전자금융업, PG). Invoke /code.",
   "version": "0.2.0",
   "author": {
     "name": "Choi Hee Chul",
@@ -30,6 +30,9 @@
     "./solid",
     "./strangler-fig",
     "./team-topologies",
-    "./twelve-factor"
+    "./twelve-factor",
+    "./owasp-security",
+    "./cicd-basics",
+    "./api-design"
   ]
 }
