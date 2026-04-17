@@ -35,6 +35,8 @@ software-framework/
 
 메타 라우터가 문제 신호를 매핑해 1~3개 프레임워크를 선택, Skill 툴로 실행·합성.
 
+> 💡 **짧은 이름**: [래퍼 설정](https://github.com/ironyjk/claude-frameworks-marketplace#짧은-이름으로-쓰기-optional) 후 `/code`로 호출 가능
+
 ## 범위 바깥
 
 - 특정 언어·런타임 best practice
