@@ -85,6 +85,16 @@ GET /orders?userId=123       → orders filtered by user
 
 **Rule of thumb**: Nest at most 2 levels deep. `/a/:id/b/:id` is acceptable. `/a/:id/b/:id/c/:id/d/:id` is a smell.
 
+### Health & Status Endpoints
+
+| Endpoint | Purpose |
+|---|---|
+| `GET /health` | Basic liveness check (returns 200 if server is running) |
+| `GET /health/ready` | Readiness check (returns 200 if all dependencies are connected) |
+| `GET /version` | Returns app version, git commit hash (useful for debugging deployments) |
+
+These are not resources but operational endpoints. Every API should have at least `GET /health`.
+
 **Naming conventions**:
 ```
 # Use plural nouns for collections

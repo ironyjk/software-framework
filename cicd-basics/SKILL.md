@@ -247,6 +247,32 @@ These platforms handle: SSL certificates, HTTPS, auto-deploys from GitHub, envir
 
 ---
 
+## Health Check Endpoint
+
+Every deployed app needs a `/health` or `/healthz` endpoint:
+
+```javascript
+// Minimum viable health check
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Better: check dependencies
+app.get('/health', async (req, res) => {
+  const dbOk = await checkDatabase();
+  const status = dbOk ? 200 : 503;
+  res.status(status).json({ status: dbOk ? 'ok' : 'degraded', db: dbOk });
+});
+```
+
+Why it matters:
+- CI/CD needs it to know if deployment succeeded
+- Load balancers use it to route traffic
+- Monitoring tools use it for uptime alerts
+- PaaS platforms (Vercel, Railway) use it for auto-restart decisions
+
+---
+
 ## Connecting to 12-Factor
 
 CI/CD operationalizes the 12-Factor principles:
