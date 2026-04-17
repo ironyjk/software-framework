@@ -1,109 +1,109 @@
 ---
 name: bisection
 version: "0.1.0"
-description: "Bisection — git bisect, binary search, delta debugging. 'N개 후보 중 원인 하나'를 log N 단계로 격리. regression·장애 구간·최소 재현 입력 탐색."
+description: "Bisection — git bisect, binary search, delta debugging. Isolate 'one cause among N candidates' in log N steps. Regression hunting, outage window narrowing, minimal reproducer input discovery."
 ---
 
 # Bisection
 
-## 한 줄 요약
+## One-Line Summary
 
-**원인 공간이 크고 결정론적일 때 이분 탐색**. N개 커밋·N개 입력·N개 구성 중 원인을 `log₂ N` 단계로 찾는다.
+**Binary search when the cause space is large and deterministic**. Find the culprit among N commits, N inputs, or N configurations in `log₂ N` steps.
 
-## 이론 기원
+## Theoretical Origins
 
-- **Linus Torvalds** — git bisect (2005). 커널 regression 추적용.
-- **Andreas Zeller** — Delta Debugging (1999). 실패 유발 입력 최소화.
-- 이분 탐색 알고리즘의 디버깅 응용.
+- **Linus Torvalds** — git bisect (2005). For tracking kernel regressions.
+- **Andreas Zeller** — Delta Debugging (1999). Minimizing failure-inducing input.
+- Debugging application of the binary search algorithm.
 
-## 세 가지 변형
+## Three Variants
 
 ### 1. Commit Bisection (git bisect)
-- "언제부터 깨졌나"
-- 명령: `git bisect start / bad / good <ref>`
-- 각 단계에서 `good` 또는 `bad` 판정 → 좁혀감
-- 자동화: `git bisect run ./test.sh` (exit 0 = good, non-zero = bad)
+- "Since when has it been broken?"
+- Commands: `git bisect start / bad / good <ref>`
+- At each step, judge `good` or `bad` → narrow down
+- Automation: `git bisect run ./test.sh` (exit 0 = good, non-zero = bad)
 
 ### 2. Binary Search Input
-- "어떤 입력이 트리거하는가"
-- 대량 요청 로그·테스트 스위트에서 문제 하나 격리
-- 원본 입력의 절반씩 제거하며 실패 여부 확인
+- "Which input triggers it?"
+- Isolate a single problem from massive request logs or test suites
+- Remove halves of the original input and check failure reproduction
 
 ### 3. Delta Debugging
-- "실패 재현에 *꼭* 필요한 최소 입력"
-- 자동화된 최소화 알고리즘 (ddmin)
-- HTML 파서 크래시 → 3000줄 페이지를 12글자로 축소한 사례(Zeller)
+- "The *minimal* input required to reproduce the failure"
+- Automated minimization algorithm (ddmin)
+- HTML parser crash → Zeller's case of reducing a 3000-line page to 12 characters
 
-## 언제 쓰나
+## When to Use
 
-- Regression이 있고 good·bad 두 지점 명확할 때
-- 테스트는 결정적(deterministic)이어야 함
-- 로그·입력·플래그·라이브러리 버전 등 이산 공간 탐색
+- When there is a regression and both good and bad points are clear
+- Tests must be deterministic
+- Discrete search space: logs, inputs, flags, library versions, etc.
 
-## 전제 조건
+## Preconditions
 
-- **결정론** — 같은 조건에서 같은 결과. flaky면 bisect 오작동.
-- **단조성(monotonicity)** — 어느 지점 이후 항상 bad (일시적 회복 없음)
-- **판정 자동화 가능** — 수동이면 단계당 비용 큼
+- **Determinism** — Same conditions yield the same result. Flaky tests break bisect.
+- **Monotonicity** — Always bad after some point (no temporary recovery)
+- **Automatable judgment** — Manual judgment makes each step costly
 
-비결정적이면: 여러 번 실행 + 다수결, 또는 `scientific-debugging`으로 전환.
+If non-deterministic: run multiple times with majority voting, or switch to `scientific-debugging`.
 
-## 실전 적용
+## Practical Application
 
-### git bisect 표준 루틴
+### Standard git bisect Routine
 ```
 git bisect start
 git bisect bad HEAD
-git bisect good v1.4.2        # 마지막 정상 릴리즈
-git bisect run npm test       # 자동 실행
-# 1000 커밋 중 10 단계로 원흉 커밋 찾음
+git bisect good v1.4.2        # last known good release
+git bisect run npm test       # automated execution
+# Found the culprit commit in 10 steps out of 1000 commits
 git bisect reset
 ```
 
-### 판정 스크립트 팁
-- exit 0 = good, 1~124/126~127 = bad, 125 = skip(빌드 실패 등)
-- 의도치 않은 커밋(빌드 불가)은 `git bisect skip`
+### Judgment Script Tips
+- exit 0 = good, 1~124/126~127 = bad, 125 = skip (e.g., build failure)
+- For unintended commits (unbuildable), use `git bisect skip`
 
-### 로그 bisection 예시
+### Log Bisection Example
 ```
-실패 요청 3000건 중 어느 것이 원인?
-→ 1~1500 batch 실행 → 실패 재현? Y → 1~750 → ...
-→ 10 라운드에 1건 격리
+Which of 3000 failing requests is the cause?
+→ Run batch 1~1500 → failure reproduced? Y → 1~750 → ...
+→ Isolated to 1 request in 10 rounds
 ```
 
-### Delta Debugging 도구
+### Delta Debugging Tools
 - `creduce` (C/C++)
-- `shrinker` (property-based test 내장)
-- 파이썬: `pysearch`, 커스텀 스크립트
+- `shrinker` (built into property-based tests)
+- Python: `pysearch`, custom scripts
 
-## 언제 안 쓰나
+## When Not to Use
 
-- **비결정적 실패** — race condition (→ `scientific-debugging`)
-- **단조성 깨짐** — 버그가 커밋 A에서 발생, B에서 우연히 숨고, C에서 재발
-- **상태 의존** — DB 마이그레이션 포함 커밋 구간 (bisect 시 각 단계 DB 리셋 필요)
-- **후보가 작을 때** — 5개 미만이면 순차 확인이 빠름
+- **Non-deterministic failures** — race conditions (→ `scientific-debugging`)
+- **Broken monotonicity** — bug appears in commit A, coincidentally hidden in B, reappears in C
+- **State dependency** — commit ranges that include DB migrations (each step needs DB reset)
+- **Small candidate set** — fewer than 5 candidates is faster to check sequentially
 
-## 안티패턴
+## Antipatterns
 
-- **테스트 없이 bisect** — 판정이 수동이면 틀림 잦음
-- **flaky 테스트로 bisect** — `good`을 `bad`로 잘못 판정하면 전체 오염
-- **통합 테스트로 bisect** — 느리고 환경 의존. 가능하면 단위 레벨 재현
-- **bisect 완료 후 안주** — 원인 커밋 찾은 게 근본원인 분석 아님
+- **Bisecting without tests** — manual judgment causes frequent misjudgments
+- **Bisecting with flaky tests** — misjudging `good` as `bad` contaminates the whole run
+- **Bisecting with integration tests** — slow and environment-dependent. Reproduce at the unit level if possible
+- **Resting on laurels after bisect** — finding the culprit commit is not root cause analysis
 
-## 한계
+## Limitations
 
-1. **규모 큰 병합 커밋** — merge commit이 원흉이면 내부가 다시 bisect 필요
-2. **인프라 변화** — 커밋 외 환경 변경(라이브러리, OS) 반영 안 됨
-3. **의존 재설치 비용** — node_modules·lockfile 변경 구간에선 단계당 수분 소요
+1. **Large merge commits** — if a merge commit is the culprit, its interior needs another bisect
+2. **Infrastructure changes** — environmental changes outside of commits (libraries, OS) are not reflected
+3. **Dependency reinstall cost** — across ranges with node_modules/lockfile changes, each step takes minutes
 
-## 이 프레임워크가 *틀렸을 때*
+## When This Framework Is *Wrong*
 
-- 비결정·간헐 실패 → `scientific-debugging`
-- 운영 중 분산 시스템 이상 → `observability`
-- 장애 차단 설계 → `resilience-patterns`
+- Non-deterministic or intermittent failures → `scientific-debugging`
+- Anomalies in a running distributed system → `observability`
+- Designing to contain outages → `resilience-patterns`
 
-## 추가 학습
+## Further Learning
 
 - Zeller, A. *Why Programs Fail*, Ch. 13 (Delta Debugging).
-- git-scm.com: `git bisect` 문서.
-- Regehr, J. *C-Reduce* (블로그 포스트).
+- git-scm.com: `git bisect` documentation.
+- Regehr, J. *C-Reduce* (blog post).

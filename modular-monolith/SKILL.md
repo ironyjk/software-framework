@@ -1,130 +1,130 @@
 ---
 name: modular-monolith
 version: "0.1.0"
-description: "Modular Monolith — 단일 배포 단위 안에 모듈 경계를 엄격하게 두는 아키텍처. Shopify·Basecamp 사례. 마이크로서비스의 복잡도 없이 경계의 이익. 미래 분리의 안전한 출발점."
+description: "Modular Monolith — an architecture that enforces strict module boundaries within a single deployment unit. Shopify and Basecamp case studies. The benefits of boundaries without the complexity of microservices. A safe starting point for future separation."
 ---
 
 # Modular Monolith
 
-## 한 줄 요약
+## One-Line Summary
 
-**하나로 배포, 안은 마이크로처럼 쪼갠 모노**. 배포·트랜잭션·디버깅은 단순(모노의 장점), 코드·팀 경계는 명확(마이크로의 장점). 대부분의 스타트업·제품의 *기본값이어야 함*.
+**One deployment on the outside, microservice-like divisions on the inside**. Deployment, transactions, and debugging stay simple (the strength of the mono), while code and team boundaries remain clear (the strength of micro). This should be the *default choice* for most startups and products.
 
-## 이론 기원
+## Theoretical Origins
 
-- **DHH / Basecamp** — "The Majestic Monolith" (Signal v. Noise 블로그, 2016). "Majestic Monolith" 용어의 출처.
-- **Shopify (Kirsten Westeinde)** — "Deconstructing the Monolith" (shopify.engineering, 2019). Rails 모놀리스 → 모듈러 모노 전환 사례.
-- **Simon Brown** — "Modular Monolith" 용어 대중화.
-- **Sam Newman** — *Monolith to Microservices* (O'Reilly, 2019). 점진 분리 전략.
+- **DHH / Basecamp** — "The Majestic Monolith" (Signal v. Noise blog, 2016). The origin of the term "Majestic Monolith."
+- **Shopify (Kirsten Westeinde)** — "Deconstructing the Monolith" (shopify.engineering, 2019). A case study of transitioning a Rails monolith into a modular mono.
+- **Simon Brown** — Popularized the term "Modular Monolith."
+- **Sam Newman** — *Monolith to Microservices* (O'Reilly, 2019). A strategy for incremental separation.
 
-## 핵심 원칙
+## Core Principles
 
-1. **한 프로세스·한 배포** — 모놀리스의 단순성 유지
-2. **모듈 경계 강제** — 외부로 노출되는 API만 노출, 내부 구현 숨김
-3. **공유 DB 가능, 공유 테이블 금지** — 모듈별 스키마/소유권 명확
-4. **모듈 간 통신 = 명시적 인터페이스** — 함수 호출이지만 계약은 서비스 수준
-5. **나중에 쪼갤 수 있게** — 각 모듈이 추후 별도 서비스로 뽑힐 수 있는 경계
+1. **One process, one deployment** — Preserve the simplicity of a monolith
+2. **Enforce module boundaries** — Expose only externally facing APIs, hide internal implementation
+3. **Shared DB allowed, shared tables forbidden** — Clear per-module schema/ownership
+4. **Inter-module communication = explicit interfaces** — Function calls, but contracts at the service level
+5. **Splittable later** — Boundaries such that each module can later be extracted into a separate service
 
-## 왜 마이크로서비스보다 먼저
+## Why Before Microservices
 
-| 항목 | 모노 | 모듈러 모노 | 마이크로서비스 |
+| Item | Mono | Modular Mono | Microservices |
 |---|---|---|---|
-| 배포 복잡도 | 낮음 | 낮음 | 높음 |
-| 트랜잭션 | 간단 | 간단 | 분산 (어려움) |
-| 디버깅 | 로컬 스택 | 로컬 스택 | 분산 추적 필수 |
-| 경계 규율 | 느슨 | 강제 가능 | 강제됨 |
-| 팀 독립성 | 낮음 | 중간 | 높음 |
-| 운영 비용 | 낮음 | 낮음 | 높음 |
-| 독립 스케일링 | 불가 | 불가 | 가능 |
+| Deployment complexity | Low | Low | High |
+| Transactions | Simple | Simple | Distributed (hard) |
+| Debugging | Local stack | Local stack | Distributed tracing required |
+| Boundary discipline | Loose | Enforceable | Enforced |
+| Team independence | Low | Medium | High |
+| Operational cost | Low | Low | High |
+| Independent scaling | Not possible | Not possible | Possible |
 
-*초기·중기 스타트업의 비용 대비 이익*: Modular Monolith가 대부분 승.
+*Cost-benefit for early and mid-stage startups*: Modular Monolith wins most of the time.
 
-## 모듈 경계 강제 방법
+## How to Enforce Module Boundaries
 
-### 언어 레벨
+### Language Level
 - Java: module-info.java (Java 9+)
-- Rust: crate 경계
-- Python: 패키지 구조 + 린터 (import-linter)
-- TypeScript: workspace 패키지 + lint 규칙
-- Ruby: packwerk (Shopify 오픈소스)
+- Rust: crate boundaries
+- Python: package structure + linter (import-linter)
+- TypeScript: workspace packages + lint rules
+- Ruby: packwerk (Shopify open source)
 
-### DB 레벨
-- 모듈별 스키마 분리
-- 외부 모듈은 해당 스키마 읽기·쓰기 금지
-- 조인 필요 → 내부 API 호출
+### DB Level
+- Separate schema per module
+- External modules forbidden from reading/writing that schema
+- Joins needed → call an internal API
 
-### 코드 리뷰 레벨
-- "이 모듈은 저 모듈을 모르도록" 리뷰어 원칙
-- 순환 의존 탐지 도구
+### Code Review Level
+- Reviewer principle: "this module should not know about that module"
+- Circular dependency detection tooling
 
-## 언제 쓰나
+## When to Use
 
-- 스타트업 MVP ~ 중기 제품
-- 팀 1~30명 규모
-- 도메인이 한두 개 제품 중심
-- 아직 독립 스케일링 요구 없음
-- **기본값으로 선택**
+- Startup MVP ~ mid-stage product
+- Team size 1–30
+- Domain centered on one or two products
+- No independent scaling requirements yet
+- **Choose as the default**
 
-## 마이크로서비스로 언제 쪼개나 (쪼개지 않을 이유부터)
+## When to Split into Microservices (Start with Reasons Not to Split)
 
-쪼갤 **정당한 이유**:
-1. 팀 독립 배포 강하게 필요 (팀 50명+ 등)
-2. 특정 모듈이 독립 스케일링 필요 (다른 모듈의 10배 부하)
-3. 서로 다른 기술 스택·런타임이 정말 필요
-4. 조직 분리 (M&A, 스핀오프)
+**Legitimate reasons** to split:
+1. Strong need for independent team deployments (teams of 50+, etc.)
+2. A specific module needs independent scaling (10× the load of other modules)
+3. Genuinely different tech stacks/runtimes are truly required
+4. Organizational separation (M&A, spinoff)
 
-쪼개지 말아야 할 이유:
-1. "마이크로서비스가 멋있으니까" — 1순위 실패 사유
-2. "코드 베이스가 커서" — 모듈화로 해결
-3. "성능 문제" — 일단 프로파일링부터
-4. "이 팀이 독립하고 싶어서" — 경계부터 정리
+Reasons you should NOT split:
+1. "Because microservices are cool" — the #1 failure reason
+2. "Because the code base is big" — solve with modularization
+3. "Performance issues" — profile first
+4. "Because this team wants independence" — sort out boundaries first
 
-## 실전 적용
+## Real-World Application
 
-### Shopify 사례
-- Rails 모놀리스 유지, ~수백만 줄
-- `packwerk`로 모듈 경계 검사
-- 공개 API 존재: Merchants, Products, Orders 등
-- *이 규모에서도* majestic monolith
+### Shopify Case
+- Retained Rails monolith, ~millions of lines
+- `packwerk` inspects module boundaries
+- Public APIs exist: Merchants, Products, Orders, etc.
+- *Even at this scale*, a majestic monolith
 
-### 점진 도입
-1. 현 모노의 암묵적 경계 식별
-2. 모듈 경계 후보 선정 (bounded context ≈ 모듈)
-3. 의존 그래프 그리고 순환 제거
-4. 모듈별 코드 이동 + 명시 API
-5. 린터·CI로 경계 위반 차단
+### Incremental Adoption
+1. Identify implicit boundaries in the current mono
+2. Select module boundary candidates (bounded context ≈ module)
+3. Draw the dependency graph and remove cycles
+4. Move code per module + explicit APIs
+5. Block boundary violations with linters/CI
 
-## 안티패턴
+## Antipatterns
 
-- **이름만 모듈러** — 경계 없음, 여전히 얽힘
-- **DB는 공유, 조인은 마구** — 진짜 경계 아님
-- **모듈 너무 많음** — 20개 이상 되면 관리 불가. 5~10이 보통
-- **"미래에 뽑을 거니까" 과설계** — YAGNI
-- **마이크로로 성급 분리** — 모노에서도 분리 못 하던 팀은 마이크로에서도 못 함
+- **Modular in name only** — No boundaries, still tangled
+- **Shared DB, joins everywhere** — Not real boundaries
+- **Too many modules** — Unmanageable past 20. Typically 5–10
+- **Over-engineering "because we'll split it later"** — YAGNI
+- **Premature split into micro** — A team that couldn't keep separation in the mono won't in micro either
 
-## 한계
+## Limitations
 
-1. **단일 배포 장애 반경** — 한 모듈 배포 실수가 전체 영향
-2. **단일 런타임 제약** — 같은 언어·프레임워크 강제
-3. **독립 스케일링 불가** — CPU·메모리 모듈별 할당 못함
-4. **팀 수 늘면 배포 조율 비용** — 20명+ 이상에서 병목
+1. **Single-deployment blast radius** — A deployment mistake in one module affects the whole
+2. **Single-runtime constraint** — Forces the same language/framework
+3. **No independent scaling** — Cannot allocate CPU/memory per module
+4. **Deployment coordination cost as team grows** — Becomes a bottleneck at 20+ people
 
-## 이 프레임워크와 함께 쓰는 것들
+## Frameworks That Pair with This One
 
-- `ddd` — bounded context = 모듈
-- `hexagonal` — 모듈 내부 구조
-- `team-topologies` — 팀과 모듈 정렬
-- `strangler-fig` — 레거시 모노 → 모듈러 모노 전환
+- `ddd` — bounded context = module
+- `hexagonal` — internal structure of a module
+- `team-topologies` — aligning teams with modules
+- `strangler-fig` — legacy mono → modular mono transition
 
-## 이 프레임워크가 *틀렸을 때*
+## When This Framework Is *Wrong*
 
-- 팀 100명+ 독립 배포 필수 → 마이크로 분리
-- 이미 모듈 경계 명확·운영 성숙 → 마이크로 후보
-- 극단적 다른 기술 스택 필요 → 분리
+- 100+ team members requiring independent deployment → split into micro
+- Module boundaries already clear and operations mature → candidate for micro
+- Extremely different tech stacks required → split
 
-## 추가 학습
+## Further Reading
 
-- Shopify Engineering. "Deconstructing the Monolith" (블로그).
+- Shopify Engineering. "Deconstructing the Monolith" (blog).
 - Newman, S. *Monolith to Microservices.* (2019)
-- Brown, S. *Software Architecture for Developers.* — modular monolith 섹션.
-- Packwerk (github.com/Shopify/packwerk) — Ruby 모듈 경계 검사 도구.
+- Brown, S. *Software Architecture for Developers.* — modular monolith section.
+- Packwerk (github.com/Shopify/packwerk) — Ruby module boundary inspection tool.

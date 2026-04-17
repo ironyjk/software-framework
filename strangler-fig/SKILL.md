@@ -1,138 +1,138 @@
 ---
 name: strangler-fig
 version: "0.1.0"
-description: "Strangler Fig Pattern (Martin Fowler) — 레거시를 한 번에 갈아엎지 말고 주변에 새 시스템을 키워 점진 교체. Branch by Abstraction·Parallel Change 포함. 리라이트 실패의 대안."
+description: "Strangler Fig Pattern (Martin Fowler) — don't rip out legacy all at once; grow a new system around it and replace it gradually. Includes Branch by Abstraction and Parallel Change. The alternative to failed rewrites."
 ---
 
 # Strangler Fig Pattern
 
-## 한 줄 요약
+## One-Line Summary
 
-**옛 나무를 잘라내지 말고, 옆에 무화과나무를 심어 천천히 감싸 죽여라.** 레거시 시스템을 한 번에 리라이트하지 말고, 기능 단위로 새 시스템이 옛것을 대체하게 만든다.
+**Don't cut down the old tree — plant a fig tree beside it and let it slowly wrap and strangle the old one.** Don't rewrite a legacy system all at once; let a new system replace the old one feature by feature.
 
-## 이론 기원
+## Theoretical Origin
 
-- **Martin Fowler** — "StranglerFigApplication" (2004). 호주 여행 중 본 strangler fig(교살무화과) 비유.
-- 대안 이름: Strangler Pattern, Gradual Migration.
-- 함께 쓰는 기법: **Branch by Abstraction** (Paul Hammant), **Parallel Change / Expand-Contract** (Danilo Sato).
-- 뿌리: 1990s "리라이트는 거의 실패한다"는 Joel Spolsky의 주장에 대한 실무적 답.
+- **Martin Fowler** — "StranglerFigApplication" (2004). The analogy came from a strangler fig tree he saw while traveling in Australia.
+- Alternative names: Strangler Pattern, Gradual Migration.
+- Companion techniques: **Branch by Abstraction** (Paul Hammant), **Parallel Change / Expand-Contract** (Danilo Sato).
+- Roots: a practical response to Joel Spolsky's 1990s argument that "rewrites almost always fail."
 
-## 왜 리라이트가 실패하는가
+## Why Rewrites Fail
 
-- 비즈니스는 멈추지 않음 (신기능 계속)
-- 원 시스템 코드에 *암묵 지식* (엣지케이스·히스토리)
-- 완전 교체 = Big Bang = 실패하면 롤백 못함
-- 팀 사기 붕괴 (2년째 새로 만드는데 아직 안 나옴)
+- The business doesn't stop (new features keep coming)
+- The original system's code contains *tacit knowledge* (edge cases, history)
+- Full replacement = Big Bang = no rollback if it fails
+- Team morale collapses ("we've been rewriting for two years and still nothing ships")
 
-## Strangler의 전략
+## The Strangler Strategy
 
-### 단계
+### Stages
 ```
-1. 경계 식별: 교체할 기능·모듈 선정 (작고 독립적인 것부터)
-2. 래퍼(Facade): 옛 시스템 앞에 라우팅 레이어
-3. 신규 구현: 새 서비스·모듈이 해당 기능 제공
-4. 트래픽 이관: 일부 → 전부 점진 전환
-5. 옛 코드 삭제
-6. 반복
+1. Identify boundaries: choose the feature/module to replace (start small and independent)
+2. Wrapper (Facade): a routing layer in front of the old system
+3. New implementation: a new service/module provides that feature
+4. Traffic migration: partial → full, gradually
+5. Delete the old code
+6. Repeat
 ```
 
-### 함께 쓰는 보조 기법
+### Companion Techniques
 
 **Branch by Abstraction** (Hammant)
-- 레거시 위에 *추상 인터페이스* 생성
-- 기존 구현을 그 인터페이스 뒤로
-- 새 구현을 같은 인터페이스로 추가
-- 플래그로 전환
-- 옛 구현 제거
+- Create an *abstract interface* on top of the legacy
+- Move the existing implementation behind that interface
+- Add the new implementation behind the same interface
+- Switch via a flag
+- Remove the old implementation
 
 **Parallel Change (Expand-Contract)** (Sato)
-- Expand: 새 버전 추가, 옛 버전 유지
-- Migrate: 호출자·데이터를 점진 이관
-- Contract: 옛 버전 제거
+- Expand: add the new version, keep the old version
+- Migrate: gradually move callers and data
+- Contract: remove the old version
 
 **Feature Toggle**
-- 신규 경로 vs 옛 경로 런타임 스위치
-- 카나리 전환 (1% → 10% → 50% → 100%)
-- 문제 시 즉시 롤백
+- Runtime switch between new and old paths
+- Canary rollout (1% → 10% → 50% → 100%)
+- Instant rollback when there's a problem
 
-## 언제 쓰나
+## When to Use
 
-- 레거시 모놀리스 → 마이크로·모듈러 모노 전환
-- 기술 스택 교체 (PHP→Go, JSP→React)
-- 데이터 저장소 마이그레이션 (RDB→NewSQL, 단일 DB→샤딩)
-- 외부 API 버전 업그레이드
-- 코드베이스 분할 (회사 분사·M&A)
+- Legacy monolith → microservices/modular monolith transition
+- Tech stack replacement (PHP→Go, JSP→React)
+- Data store migration (RDB→NewSQL, single DB→sharded)
+- External API version upgrade
+- Codebase split (corporate spin-off, M&A)
 
-## 실전 적용
+## Field Application
 
-### 트래픽 라우팅 위치
-- **Ingress / API Gateway** — 가장 깔끔. path·header 기반 분기.
-- **Load Balancer** — 가중치 라우팅
-- **Service Mesh** — Istio VirtualService 등
-- **애플리케이션 레이어** — 레거시 내부에 분기 로직 (최후)
+### Traffic Routing Location
+- **Ingress / API Gateway** — cleanest. Path/header-based routing.
+- **Load Balancer** — weighted routing
+- **Service Mesh** — Istio VirtualService, etc.
+- **Application Layer** — branching logic inside the legacy (last resort)
 
-### 데이터 이관 패턴
-- **Dual Write**: 새·옛 DB 둘 다 쓰기 (일관성 검증)
-- **CDC (Change Data Capture)**: 옛 DB 변경을 새 DB로 복제
-- **Outbox Pattern**: 이벤트로 이관
-- 데이터 소유권 명확히: 한 도메인은 한 곳만 authoritative
+### Data Migration Patterns
+- **Dual Write**: write to both new and old DBs (verify consistency)
+- **CDC (Change Data Capture)**: replicate changes from the old DB to the new DB
+- **Outbox Pattern**: migrate via events
+- Make data ownership explicit: each domain has one authoritative home
 
-### 단계별 체크포인트
-- [ ] 경계가 명확한가
-- [ ] 카나리 1% 24시간 통과
-- [ ] 롤백 절차 자동화
-- [ ] 옛·새 결과 비교 로그 (shadow traffic)
-- [ ] SLO 유지 확인
+### Stage Checkpoints
+- [ ] Is the boundary clearly defined?
+- [ ] Canary at 1% has passed 24 hours
+- [ ] Rollback procedure is automated
+- [ ] Shadow traffic logs comparing old vs. new results
+- [ ] SLOs are being maintained
 
-## 안티패턴
+## Anti-patterns
 
-- **경계 없는 strangler** — 이건 그냥 리라이트의 느린 버전. 경계 없으면 옛 시스템이 안 죽음.
-- **Big Bang in Strangler 옷** — 95% 구축 후 한 번 전환 = 여전히 Big Bang
-- **옛 코드 삭제 안 함** — 두 시스템 유지비 = 지옥. 삭제가 플랜의 핵심.
-- **신규에서 같은 실수** — 아키텍처·테스트 규율 없는 신규는 새 레거시
-- **데이터 이관 후회** — 나중에 "어? 옛 DB도 쓰고 있었네" 발견
+- **Strangler without boundaries** — that's just a slower rewrite. Without boundaries, the old system never dies.
+- **Big Bang dressed as Strangler** — building 95% and flipping once = still a Big Bang
+- **Never deleting the old code** — maintaining two systems = hell. Deletion is the core of the plan.
+- **Same mistakes in the new system** — new code without architectural and testing discipline becomes the new legacy
+- **Data migration regret** — later discovering "wait, we were still writing to the old DB?"
 
-## 한계
+## Limitations
 
-1. **기간 김** — 진짜 strangler는 1~5년. 리더십 인내 필요.
-2. **이중 운영 비용** — 이관 기간 동안 두 시스템 다 운영
-3. **초기 속도 느림** — 경계·라우팅 세팅이 선행
-4. **일부 영역 기술적 불가능** — 데이터 모델 변경이 매우 큰 경우 strangler 어려움
-5. **심리적 저항** — "이럴 거면 그냥 리라이트" 주장이 계속 나옴
+1. **Long duration** — a real strangler takes 1–5 years. Leadership patience required.
+2. **Dual operating cost** — both systems must be run during migration
+3. **Slow initial pace** — boundary and routing setup come first
+4. **Technically infeasible in some areas** — when the data model change is very large, strangler is difficult
+5. **Psychological resistance** — "if it's going to take this long, just rewrite it" keeps coming up
 
-## 성공 조건
+## Conditions for Success
 
-1. **리더십이 장기 플랜을 보장**
-2. **"옛 코드 삭제" 마일스톤 명시** — 없으면 영구 동거
-3. **팀이 두 시스템 이해** — 신규만 아는 팀은 실패
-4. **경계 선정 안목** — 첫 타깃은 *작고 독립·가시적 가치*
-5. **카나리·롤백 자동화**
+1. **Leadership guarantees the long-term plan**
+2. **Explicit "delete old code" milestones** — without these, permanent cohabitation
+3. **The team understands both systems** — a team that only knows the new side fails
+4. **Boundary-selection judgment** — the first target should be *small, independent, and visibly valuable*
+5. **Automated canary and rollback**
 
-## 한국 레거시 현장 맥락
+## Context for Korean Legacy Environments
 
-- **PHP 5.x/7.x 이커머스 모놀리스** — 10~15년 된 대형몰·티몬·11번가 계열 전형. MySQL FK·트리거·저장 프로시저 얽힘이 strangler 최대 적.
-- **JSP + Struts + iBATIS 금융·공공** — 2000s 구축, 벤더 락인. 망분리·전자서명·공인인증 의존 때문에 리라이트보다 strangler가 현실적.
-- **SI 벤더 인수인계 코드** — 문서 없음·테스트 없음·오너 없음. strangler 시작 전 *코드 고고학*(git blame + 인터뷰) 필요.
-- **공공 클라우드 전환 (행안부·KISA 가이드)** — 클라우드 네이티브 전환 의무화 추세. strangler + `twelve-factor`로 단계 접근.
-- **금융권 "차세대 프로젝트"** — 2~3년 대규모 재구축 관례 — 여전히 빅뱅 성향. 최근 카카오뱅크·토스뱅크 등 스타트업 모델이 점진 접근 영향.
-- **경영진 "마이크로서비스 3년 전환" 공표** — 정치적으로 빅뱅 금지는 받지만 *종착지가 마이크로여야 하는가*는 별도 논의. 모듈러 모노 + 선별 마이크로 하이브리드 제안이 현실적.
+- **PHP 5.x/7.x e-commerce monoliths** — typical in 10–15 year-old large malls such as Tmon, 11st, and affiliates. Tangled MySQL FKs, triggers, and stored procedures are strangler's biggest enemy.
+- **JSP + Struts + iBATIS in finance/public sector** — built in the 2000s, vendor lock-in. Due to dependencies on network separation (망분리), digital signatures, and public certificates (공인인증), strangler is more realistic than rewrite.
+- **SI vendor handover code** — no docs, no tests, no owner. Before starting a strangler, *code archaeology* (git blame + interviews) is needed.
+- **Public cloud migration (MOIS/KISA guidelines)** — cloud-native transition is becoming mandated. A staged approach with strangler + `twelve-factor`.
+- **Financial sector "next-generation projects" (차세대 프로젝트)** — 2–3 year large-scale rebuild is conventional — still Big Bang-oriented. Recent startup models like Kakao Bank and Toss Bank have influenced incremental approaches.
+- **Executive announcements of "3-year microservice transition"** — politically, no-Big-Bang is accepted, but *whether the destination must be microservices* is a separate discussion. A hybrid of modular monolith + selective microservices is the realistic proposal.
 
-## 이 프레임워크와 함께 쓰는 것들
+## What to Use Alongside This Framework
 
-- `hexagonal` — 신규 경계에 Ports & Adapters 적용
-- `ddd` — 경계 선정의 이론적 근거 (bounded context)
-- `modular-monolith` — 마이크로 가기 전 중간 목적지
-- `observability` — 이관 중 신·구 비교·SLO 확인
+- `hexagonal` — apply Ports & Adapters to the new boundary
+- `ddd` — theoretical basis for boundary selection (bounded context)
+- `modular-monolith` — the intermediate destination before going microservice
+- `observability` — new/old comparison and SLO verification during migration
 
-## 이 프레임워크가 *틀렸을 때*
+## When This Framework Is *Wrong*
 
-- 정말 작은 시스템 → 그냥 리라이트가 빠름
-- 스키마가 근본 잘못돼 호환 불가능 → 새 DB 병행 운영 필요
-- 규제·계약상 "지금 전면 교체" 강제
+- Truly small systems → just rewriting is faster
+- Fundamentally broken schema that's incompatible → running a new DB in parallel is required
+- Regulatory or contractual "replace everything now" mandate
 
-## 추가 학습
+## Further Learning
 
 - Fowler, M. "StranglerFigApplication" (martinfowler.com)
 - Newman, S. *Monolith to Microservices.* Ch. 4.
-- Hammant, P. "Branch by Abstraction" (블로그)
+- Hammant, P. "Branch by Abstraction" (blog)
 - Sato, D. "ParallelChange" (martinfowler.com)

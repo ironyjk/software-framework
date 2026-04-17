@@ -1,151 +1,151 @@
 ---
 name: twelve-factor
 version: "0.1.0"
-description: "Twelve-Factor App (Adam Wiggins, Heroku) — 클라우드 네이티브 앱의 12원칙. 배포·운영·확장의 기본 위생. 설정·의존성·포트·로그·프로세스 12개 축으로 체크."
+description: "Twelve-Factor App (Adam Wiggins, Heroku) — the 12 principles for cloud-native apps. Baseline hygiene for deployment, operations, and scaling. Check along 12 axes: config, dependencies, port binding, logs, processes, and more."
 ---
 
 # Twelve-Factor App
 
-## 한 줄 요약
+## One-Line Summary
 
-**클라우드에 바로 올릴 수 있는 앱의 기본 위생 12가지**. 대부분은 이제 상식처럼 느껴지지만, 위반 사례는 2026년에도 흔하다.
+**The 12 baseline hygiene items that make an app ready to ship to the cloud.** Most now feel like common sense, but violations are still common in 2026.
 
-## 이론 기원
+## Theoretical Origin
 
-- **Adam Wiggins** 외 Heroku 엔지니어들 (2011) — `12factor.net`.
-- 수천 개 SaaS 앱 운영 경험의 집약.
-- Kubernetes·Docker 생태계의 기저 전제로 자리잡음.
+- **Adam Wiggins** and fellow Heroku engineers (2011) — `12factor.net`.
+- Distilled from running thousands of SaaS apps.
+- Became the foundational assumption underlying the Kubernetes and Docker ecosystems.
 
-## 12개 원칙
+## The 12 Principles
 
 ### I. Codebase
-**한 앱 = 하나의 코드베이스, 여러 배포**
-- 한 Git 레포 = 한 앱
-- 레포 여럿이 같은 앱 = 위반 (공유 라이브러리로 분리해야)
-- 모노레포 내 여러 앱은 OK
+**One app = one codebase, many deploys**
+- One Git repo = one app
+- Multiple repos for the same app = violation (extract shared code as a library)
+- Multiple apps inside a monorepo is fine
 
 ### II. Dependencies
-**의존성을 명시적으로 선언, 격리**
+**Declare and isolate dependencies explicitly**
 - `package.json`, `requirements.txt`, `go.mod`, `Gemfile`
-- 시스템 패키지 암묵 의존 금지
-- lock file 커밋
+- No implicit reliance on system packages
+- Commit lock files
 
 ### III. Config
-**환경별로 달라지는 모든 것을 환경변수로**
-- DB URL, API 키, feature flag
-- 코드에 박지 말 것
-- 12-Factor 판별 테스트: "공개해도 되는가?" — 못 하면 config에 있어야
+**Put everything that differs per environment into environment variables**
+- DB URL, API keys, feature flags
+- Do not hard-code in the source
+- 12-Factor litmus test: "Could you open-source this?" — if not, it belongs in config
 
 ### IV. Backing Services
-**백엔드 서비스를 교체 가능한 자원으로 취급**
-- DB, 캐시, MQ는 URL 하나로 참조
-- 로컬 Postgres ↔ RDS 교체 코드 변경 없이
+**Treat backing services as swappable resources**
+- DB, cache, MQ referenced via a single URL
+- Swap local Postgres ↔ RDS with no code change
 
 ### V. Build, Release, Run
-**3단계 엄격 분리**
-- Build: 소스 → 실행 번들
-- Release: 번들 + config → 릴리스
-- Run: 릴리스 실행
-- 프로덕션에서 코드 수정 금지
+**Strictly separate the three stages**
+- Build: source → executable bundle
+- Release: bundle + config → release
+- Run: execute the release
+- No editing code in production
 
 ### VI. Processes
-**앱을 무상태 프로세스로**
-- 메모리·로컬 디스크를 영속 저장소로 쓰지 말 것
-- 세션은 Redis 같은 backing service로
-- Scaling = 프로세스 추가
+**Run the app as stateless processes**
+- Do not use memory or local disk as persistent storage
+- Keep sessions in a backing service like Redis
+- Scaling = add more processes
 
 ### VII. Port Binding
-**서비스를 포트 바인딩으로 노출**
-- 웹 서버(nginx·Apache)에 의존 않고 self-contained
-- Node/Go/Flask가 포트 직접 열고 HTTP 응대
-- 라우팅·SSL은 상위 레이어(로드밸런서·ingress)
+**Export services via port binding**
+- Self-contained, no dependency on an external web server (nginx, Apache)
+- Node/Go/Flask opens the port itself and serves HTTP directly
+- Routing and SSL live at a higher layer (load balancer, ingress)
 
 ### VIII. Concurrency
-**프로세스 모델로 확장**
-- 수직 확장(큰 머신) 대신 수평(프로세스 추가)
-- Unix 프로세스 모델: web / worker / scheduler 등 프로세스 타입
-- OS가 프로세스 관리(systemd, K8s)
+**Scale out via the process model**
+- Horizontal (add processes) instead of vertical (bigger machine)
+- Unix process model: process types such as web / worker / scheduler
+- Let the OS manage processes (systemd, K8s)
 
 ### IX. Disposability
-**빠른 시작, graceful 종료**
-- 몇 초 내 시작
-- SIGTERM 받으면 현재 작업 정리 후 종료
-- 크래시 안전: 재시작으로 복구
+**Fast startup, graceful shutdown**
+- Start in seconds
+- On SIGTERM, finish current work and shut down cleanly
+- Crash-safe: recovery happens via restart
 
 ### X. Dev/Prod Parity
-**개발·스테이징·프로덕션을 최대한 비슷하게**
-- 시간 차: 배포 빈도 높게 (며칠 → 시간)
-- 인력 차: 개발자가 배포도
-- 도구 차: dev와 prod가 같은 DB·MQ
+**Keep development, staging, and production as similar as possible**
+- Time gap: deploy more frequently (days → hours)
+- People gap: developers deploy too
+- Tools gap: dev and prod use the same DB and MQ
 
 ### XI. Logs
-**로그를 이벤트 스트림으로**
-- 앱은 stdout/stderr로 흘려보냄
-- 수집·저장·분석은 환경 책임 (Stackdriver, ELK, Loki)
-- 앱이 로그 파일 관리 X
+**Treat logs as event streams**
+- The app writes to stdout/stderr
+- Collection, storage, and analysis are the environment's job (Stackdriver, ELK, Loki)
+- The app does not manage log files
 
 ### XII. Admin Processes
-**관리 작업을 일회성 프로세스로**
-- 마이그레이션, 일회 스크립트도 같은 코드베이스·같은 릴리스로 실행
-- 프로덕션 REPL 접속도 동일 환경
+**Run admin tasks as one-off processes**
+- Migrations and one-off scripts run from the same codebase and same release
+- Production REPL access uses the same environment
 
-## 언제 쓰나
+## When to Use It
 
-- 클라우드 네이티브 앱 설계·리팩터
-- 레거시 클라우드 마이그레이션 체크리스트
-- 신입 온보딩 공통 언어
-- 배포 자동화 전 기반 점검
-- Kubernetes·ECS 전환 전제 조건
+- Designing or refactoring cloud-native apps
+- Checklist for migrating legacy systems to the cloud
+- Common vocabulary during new-hire onboarding
+- Baseline check before automating deployment
+- A prerequisite for moving to Kubernetes or ECS
 
-## 실전 적용
+## Applying It in Practice
 
-### 체크리스트로
-각 factor를 5분씩 점검:
-- [ ] Config가 env var로?
-- [ ] 로그가 stdout?
-- [ ] 빌드·릴리스·런 분리?
-- [ ] 프로세스 무상태?
-- [ ] 시작·종료 시간?
+### As a Checklist
+Spend five minutes per factor:
+- [ ] Is config in env vars?
+- [ ] Do logs go to stdout?
+- [ ] Are build, release, and run separated?
+- [ ] Are processes stateless?
+- [ ] Startup and shutdown times?
 
-위반 한두 개 발견 = 흔함. 전 항목 즉시 고치지 말고 *운영 고통과 연결된 것부터*.
+Finding one or two violations is normal. Do not rush to fix everything — *start with the ones tied to operational pain*.
 
-### 모던 확장 ("Beyond 12 Factor", Kevin Hoffman)
+### Modern Extensions ("Beyond 12 Factor", Kevin Hoffman)
 - API First
 - Telemetry
 - Authentication & Authorization
 - Self-service
-- 더 분화된 backing service 이해
+- A more nuanced view of backing services
 
-## 안티패턴
+## Anti-Patterns
 
-- **Config를 YAML 파일로 커밋** — 환경별 다르면 위반
-- **로컬 파일에 세션·캐시 저장** — 프로세스 재시작 시 소실
-- **로그 파일 로테이션을 앱이** — 환경에 맡길 일
-- **서비스가 OS 의존 바이너리** — 컨테이너·이식성 깨짐
-- **"dev DB는 SQLite, prod은 Postgres"** — Parity 위반
+- **Committing config as YAML files** — a violation the moment it differs between environments
+- **Storing sessions or caches in local files** — lost on process restart
+- **Rotating log files inside the app** — leave that to the environment
+- **Services depending on OS-specific binaries** — breaks containerization and portability
+- **"SQLite in dev, Postgres in prod"** — a Parity violation
 
-## 한계
+## Limitations
 
-1. **웹/API 중심** — 임베디드·ML 학습 잡·데스크톱 앱엔 일부만 적용
-2. **상태성 있는 서비스엔 한계** — Kafka·DB 운영 자체엔 다른 원칙
-3. **세부 구현은 생태계 발전으로 대체됨** — K8s·서비스 메시·OTel
-4. **문화적 변화 동반 필요** — DevOps·CI/CD 없이 12-factor만 적용 불가
+1. **Web/API-centric** — embedded systems, ML training jobs, and desktop apps only partly fit
+2. **Limited for stateful services** — operating Kafka or a DB itself follows different principles
+3. **Specific implementation details have been superseded** — by K8s, service meshes, OTel
+4. **Cultural change must come with it** — without DevOps/CI/CD, 12-factor alone is not enough
 
-## 이 프레임워크와 함께 쓰는 것들
+## Frameworks to Pair With
 
-- `observability` — XI(로그) 현대판
-- `resilience-patterns` — IX(disposability)·VIII(concurrency) 보완
-- `modular-monolith` — 내부 구조 원칙
-- *조합 효과*: 12-factor 준수 = 후속 리질리언스·관측 도입 비용 급감
+- `observability` — the modern counterpart of XI (Logs)
+- `resilience-patterns` — complements IX (Disposability) and VIII (Concurrency)
+- `modular-monolith` — principles for internal structure
+- *Combined effect*: following 12-factor slashes the cost of adopting resilience and observability later
 
-## 이 프레임워크가 *틀렸을 때*
+## When This Framework Is *Wrong*
 
-- 단일 사용자 CLI·데스크톱
-- 임베디드·IoT 제약 환경
-- 데이터플레인(DB·MQ 자체) 운영
+- Single-user CLIs and desktop apps
+- Embedded or IoT environments with tight constraints
+- Data-plane operations (running the DB or MQ itself)
 
-## 추가 학습
+## Further Reading
 
-- **원전**: 12factor.net (무료, 짧음, 전문 추천)
+- **Primary source**: 12factor.net (free, short, whole text recommended)
 - Hoffman, K. *Beyond the Twelve-Factor App.* (2016)
-- CNCF 문서 및 Kubernetes 공식 튜토리얼
+- CNCF documentation and the official Kubernetes tutorials

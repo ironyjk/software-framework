@@ -1,62 +1,62 @@
 ---
 name: event-sourcing-cqrs
 version: "0.1.0"
-description: "Event Sourcing + CQRS (Greg Young) — 상태 대신 이벤트를 저장, 상태는 이벤트의 fold. 쓰기·읽기 모델 분리. 금융 원장·감사·시간 여행·읽기 부하 분리에 강력."
+description: "Event Sourcing + CQRS (Greg Young) — store events instead of state; state is a fold of events. Separate write and read models. Powerful for financial ledgers, auditing, time travel, and offloading read workloads."
 ---
 
 # Event Sourcing + CQRS
 
-## 한 줄 요약
+## One-Line Summary
 
-**State = Fold(Events)**. 현재 상태를 저장하지 말고 *상태를 바꾼 이벤트들*을 저장. 읽기는 별도의 최적화된 모델로 투영(projection).
+**State = Fold(Events)**. Don't store current state — store the *events that changed state*. Reads are projected into separate, optimized models (projections).
 
-## 이론 기원
+## Theoretical Origins
 
-- **Greg Young** — CQRS 개념 정립 (2010s). ES는 더 오랜 뿌리 (회계 원장·SCM).
-- **Martin Fowler** — Event Sourcing 정리.
-- **Udi Dahan** — SOA·메시지 기반 설계와 결합.
-- 뿌리: 회계의 복식부기. "잔액"이 아닌 "거래" 기록.
+- **Greg Young** — formalized CQRS (2010s). ES itself has older roots (accounting ledgers, SCM).
+- **Martin Fowler** — articulated Event Sourcing.
+- **Udi Dahan** — combined it with SOA and message-based design.
+- Roots: double-entry bookkeeping in accounting. Record "transactions," not "balances."
 
-## 두 가지 개념 (독립적 사용 가능)
+## Two Concepts (Usable Independently)
 
 ### Event Sourcing (ES)
-- 쓰기 = 이벤트 append
-- 상태 = 이벤트들의 fold
-- Event Store = 변경 불가 append-only 로그
-- 장점: 완전한 감사 추적, 시간 여행(rebuild to any point), 도메인 이벤트 자연스러움
-- 단점: 스키마 진화 복잡, 쿼리 어려움
+- Writes = append events
+- State = fold over events
+- Event Store = immutable, append-only log
+- Pros: complete audit trail, time travel (rebuild to any point), natural fit for domain events
+- Cons: schema evolution is complex, querying is hard
 
 ### CQRS (Command Query Responsibility Segregation)
-- Command (쓰기) 모델 vs Query (읽기) 모델 분리
-- 각자 다른 DB·스키마·일관성 모델 가능
-- 장점: 읽기 최적화, 스케일 독립, 팀 분리
-- 단점: eventual consistency, 동기화 복잡성
+- Separate Command (write) model vs. Query (read) model
+- Each can use different DBs, schemas, and consistency models
+- Pros: read optimization, independent scaling, team separation
+- Cons: eventual consistency, synchronization complexity
 
-### 둘 합치면
-- ES가 source of truth
-- CQRS read model이 이벤트 구독해 최신화
-- 매우 강력·매우 복잡
+### Combining Both
+- ES is the source of truth
+- CQRS read models subscribe to events and stay up to date
+- Extremely powerful — extremely complex
 
-## 언제 쓰나
+## When to Use
 
-- **감사·규제 필수 도메인** — 금융 원장, 의료 기록, 법적 거래
-- **상태 히스토리 자체가 가치** — "언제 무엇이 바뀌었나"
-- **읽기 부하 >> 쓰기 부하** — 별도 read model
-- **복잡한 도메인 이벤트** — 비즈니스가 이벤트 언어로 자연
-- **시간 여행 필요** — 과거 시점 시뮬레이션, what-if 분석
+- **Domains where audit and regulation are mandatory** — financial ledgers, medical records, legal transactions
+- **State history itself has value** — "when did what change?"
+- **Read load >> write load** — separate read models
+- **Rich domain events** — the business naturally speaks in event language
+- **Time travel required** — simulating past points in time, what-if analysis
 
-### 한국 금융 맥락에서의 트리거
+### Triggers in the Korean Financial Context
 
-- **전자금융업자 감독 보고** — 금감원·금융위 전자금융사고 보고 시 거래 흐름 재구성 필요 → ES가 자연스러움
-- **PG·카드사 정산 주기** — T+2·T+3 정산에서 시점별 잔액 재구성이 상시 필요
-- **마이데이터 API** — 본인신용정보 제공 이력 감사 추적 법정 요구
-- **가상자산 사업자 (VASP)** — 특정금융정보법 거래내역 보관·제출
-- **보험·증권 영업 로그** — 자본시장법·보험업법 기록 보존 의무
-- **토스·카카오페이·네이버페이 사례** — 사용자 잔액·거래 조회는 projection, 원장은 append-only
+- **Electronic financial business supervisory reporting** — when reporting electronic financial incidents to the FSS/FSC, transaction flow must be reconstructable → ES is a natural fit
+- **PG / card company settlement cycles** — T+2 / T+3 settlement constantly requires reconstructing balances at specific points in time
+- **MyData APIs** — statutory requirement for audit trails of personal credit information provision history
+- **Virtual Asset Service Providers (VASPs)** — the Specific Financial Information Act mandates transaction record retention and submission
+- **Insurance and securities sales logs** — record retention obligations under the Capital Markets Act and the Insurance Business Act
+- **Toss, KakaoPay, Naver Pay case studies** — user balance and transaction queries are projections; the ledger is append-only
 
-## 실전 적용
+## Applied in Practice
 
-### 토스·카카오페이 같은 결제 시스템
+### Payment Systems like Toss and KakaoPay
 ```
 Command: ChargeRequested
 Event: PaymentInitiated
@@ -64,73 +64,73 @@ Event: PaymentInitiated
       → PaymentCaptured
       → PaymentSettled
 
-Read models (각자 투영):
-  - user-transaction-history (개인 뷰)
-  - merchant-daily-settlement (가맹점 정산)
-  - compliance-audit-log (규제 보고)
-  - fraud-ml-features (ML 파이프라인)
+Read models (each projected independently):
+  - user-transaction-history (personal view)
+  - merchant-daily-settlement (merchant settlement)
+  - compliance-audit-log (regulatory reporting)
+  - fraud-ml-features (ML pipeline)
 ```
 
-### Event Store 선택
-- 전용: EventStoreDB, Marten
-- 범용 메시지: Kafka + KSQL (엄밀한 ES엔 한계)
-- RDB 위 구현: outbox 패턴
+### Choosing an Event Store
+- Purpose-built: EventStoreDB, Marten
+- General messaging: Kafka + KSQL (limited for strict ES)
+- On top of an RDB: the outbox pattern
 
-### Projection (Read Model) 생성
-- 이벤트 스트림 구독
-- 최적화된 스키마로 유지
-- *재생 가능* — 스키마 바꾸면 처음부터 재구축
-- Eventually consistent (몇 ms~s 시차)
+### Creating Projections (Read Models)
+- Subscribe to event streams
+- Maintain an optimized schema
+- *Replayable* — if the schema changes, rebuild from scratch
+- Eventually consistent (lag of a few ms to seconds)
 
-## 스키마 진화
+## Schema Evolution
 
-- 이벤트는 *이미 일어난 사실* → 수정 불가
-- 신 필드 추가 시: versioning (`OrderPlacedV1`, `V2`)
-- Upcasting: 오래된 이벤트를 읽을 때 최신 형태로 변환
-- *이벤트 재명명·삭제 금지* — 호환 레이어로 관리
+- Events are *facts that already happened* → immutable
+- To add new fields: versioning (`OrderPlacedV1`, `V2`)
+- Upcasting: transform old events into the latest shape when reading
+- *Never rename or delete events* — manage via a compatibility layer
 
-## Concurrency·일관성 모델
+## Concurrency and Consistency Models
 
-- **Optimistic concurrency** — Aggregate 단위로 기대 버전(expected version)으로 append. 충돌 시 재시도 또는 command 리젝트. EventStoreDB·Marten 기본.
-- **Stream per Aggregate** — 한 Aggregate의 이벤트는 단일 스트림 (e.g. `order-12345`). 동일 스트림 내 순서 보장.
-- **Causal consistency** (스트림 내) vs **Eventual consistency** (스트림 간·projection 간)
-- **Exactly-once processing** — Kafka 기반 ES에서 특히 어려움. Idempotent consumer + dedup key 설계 필요.
-- **Snapshot 정책** — Aggregate 재구성 비용 < 쿼리 허용 지연일 때만. 보통 N개 이벤트마다 (N=50~1000) 또는 시간 기반.
-- **Projection 복원** — 스키마 변경 시 전체 이벤트 리플레이. 대규모에선 수 시간~일 단위. 병렬 projector + partition 필요.
-- **CAP 관점** — ES는 AP 성향 (write는 available, read projection은 eventually consistent).
+- **Optimistic concurrency** — append per Aggregate with an expected version. On conflict, retry or reject the command. Default in EventStoreDB and Marten.
+- **Stream per Aggregate** — events for a single Aggregate live in a single stream (e.g., `order-12345`). Order within a stream is guaranteed.
+- **Causal consistency** (within a stream) vs. **Eventual consistency** (across streams and projections)
+- **Exactly-once processing** — especially hard in Kafka-based ES. Requires idempotent consumer + dedup key design.
+- **Snapshot policy** — only when Aggregate reconstruction cost exceeds query latency tolerance. Typically every N events (N = 50–1000) or time-based.
+- **Projection rebuild** — full event replay on schema change. At scale, can take hours to days. Requires parallel projectors + partitioning.
+- **From a CAP perspective** — ES leans AP (writes are available, read projections are eventually consistent).
 
-## 안티패턴
+## Anti-Patterns
 
-- **Event Sourcing 없이 CQRS만** — 흔함. 단순 read model 분리는 "CQRS-lite"로 괜찮음
-- **"모든 것을 Event Sourcing"** — 대부분의 CRUD엔 과잉
-- **이벤트가 CRUD 이름**: `UserUpdated` 같은 무의미 이벤트 → 도메인 사건 아닌 DB 변경 log
-- **Aggregate가 너무 큼** — 이벤트 스트림 리플레이 지연 폭발
-- **Query 모델이 쓰기도 함** — CQRS 위반, 일관성 지옥
-- **Snapshot 없이 긴 히스토리** — Aggregate 재구성 비용 폭증
+- **CQRS without Event Sourcing** — common. Simple read-model separation is fine as "CQRS-lite."
+- **"Event-sourcing everything"** — overkill for most CRUD.
+- **Events named like CRUD operations**: meaningless events like `UserUpdated` → not domain occurrences, just DB change logs.
+- **Aggregates that are too large** — replay latency on the event stream explodes.
+- **Query models that also write** — violates CQRS, leads to consistency hell.
+- **Long histories without snapshots** — Aggregate reconstruction cost balloons.
 
-## 한계
+## Limitations
 
-1. **학습 곡선 급함** — 팀 전체 mental model 전환 필요
-2. **운영 복잡도** — projection lag 모니터링, replay 재해복구
-3. **스키마 진화 정치** — 이벤트 계약이 team 간 경계
-4. **Eventually consistent UX** — "방금 결제했는데 잔액 안 바뀜" 사용자 대응
-5. **작은 팀·단순 도메인엔 과잉**
+1. **Steep learning curve** — the entire team's mental model must shift
+2. **Operational complexity** — monitoring projection lag, replay for disaster recovery
+3. **Politics of schema evolution** — event contracts become cross-team boundaries
+4. **Eventually consistent UX** — handling users who say "I just paid but my balance hasn't changed"
+5. **Overkill for small teams and simple domains**
 
-## 이 프레임워크와 함께 쓰는 것들
+## What to Use Alongside This Framework
 
-- `ddd` — 도메인 이벤트가 ES 이벤트. 함께 쓰면 자연스러움.
-- `resilience-patterns` — 비동기·eventual consistency의 부작용 관리
-- `observability` — projection lag·이벤트 쌓임 감시
+- `ddd` — domain events are ES events. They pair naturally.
+- `resilience-patterns` — managing the side effects of async and eventual consistency
+- `observability` — monitoring projection lag and event backlog
 
-## 이 프레임워크가 *틀렸을 때*
+## When This Framework Is *Wrong*
 
-- 단순 CRUD → 과적용
-- 강한 즉시 일관성 필수 (의료 투약 기록 등) → ES 가능하지만 동기 projection 필요
-- 저부하·초기 MVP → ES의 감사 가치 < 복잡도 비용
+- Simple CRUD → over-application
+- Strict immediate consistency required (e.g., medical dosing records) → ES is possible, but requires synchronous projections
+- Low-load, early-stage MVP → ES's audit value < complexity cost
 
-## 추가 학습
+## Further Reading
 
-- Young, G. "CQRS Documents" (PDF, 무료).
-- Dahan, U. 블로그 및 NServiceBus 자료.
+- Young, G. "CQRS Documents" (PDF, free).
+- Dahan, U. — blog and NServiceBus materials.
 - Vernon, V. *Implementing Domain-Driven Design.* Ch. 8.
-- EventStoreDB 문서 (eventstore.com).
+- EventStoreDB documentation (eventstore.com).

@@ -1,161 +1,161 @@
 ---
 name: team-topologies
 version: "0.1.0"
-description: "Team Topologies (Skelton·Pais) — 4팀 유형 + 3 상호작용 모드 + 인지 부하 + Inverse Conway Maneuver. 팀 구조가 아키텍처를 만든다. 팀 확장·플랫폼화·마이크로서비스 조직 설계."
+description: "Team Topologies (Skelton & Pais) — 4 team types + 3 interaction modes + cognitive load + Inverse Conway Maneuver. Team structure shapes architecture. For team scaling, platformization, and microservices organization design."
 ---
 
 # Team Topologies
 
-## 한 줄 요약
+## One-Line Summary
 
-**팀 구조가 소프트웨어 구조를 결정한다(Conway's Law).** 그래서 원하는 아키텍처를 만들려면 먼저 팀을 그렇게 조직하라(Inverse Conway Maneuver). 4가지 팀 유형과 3가지 상호작용 모드로 조직을 명시적으로 설계.
+**Team structure determines software structure (Conway's Law).** So if you want a specific architecture, organize your teams accordingly first (Inverse Conway Maneuver). Explicitly design your organization using 4 team types and 3 interaction modes.
 
-## 이론 기원
+## Theoretical Origins
 
-- **Matthew Skelton & Manuel Pais** — *Team Topologies* (2019). DevOps·애자일 조직 설계 집약.
-- 뿌리: Conway's Law (1968), Spotify Model, Dunbar's number.
-- 현대 영향: 많은 테크 기업이 플랫폼 엔지니어링 조직 설계에 채택.
+- **Matthew Skelton & Manuel Pais** — *Team Topologies* (2019). A consolidation of DevOps and agile organizational design.
+- Roots: Conway's Law (1968), Spotify Model, Dunbar's number.
+- Modern impact: Many tech companies have adopted it for platform engineering organizational design.
 
-## Conway's Law (전제)
+## Conway's Law (The Premise)
 
-> "시스템을 설계하는 조직은 그 조직의 커뮤니케이션 구조를 복제하는 설계를 만든다." — Melvin Conway (1968)
+> "Any organization that designs a system will produce a design whose structure is a copy of the organization's communication structure." — Melvin Conway (1968)
 
-**역명제 (Inverse Conway Maneuver)**: 원하는 아키텍처가 있다면 그 구조로 팀을 먼저 조직하라.
+**Inverse proposition (Inverse Conway Maneuver)**: If you want a specific architecture, organize your teams into that structure first.
 
-## 4가지 팀 유형
+## The 4 Team Types
 
 ### 1. Stream-Aligned Team
-- **가치 스트림 하나에 정렬**된 팀
-- End-to-end 책임 (설계·개발·배포·운영)
-- 제품의 *대부분*이 여기 속해야 함 (7~8할)
-- 예: "결제 팀", "검색 팀", "모바일 iOS 팀"
+- A team **aligned to a single value stream**
+- End-to-end responsibility (design, development, deployment, operations)
+- *Most* of the product should reside here (70-80%)
+- Examples: "Payment team," "Search team," "Mobile iOS team"
 
 ### 2. Enabling Team
-- 한시적 **코칭·멘토링**
-- Stream-aligned 팀의 새 기술·실천 습득 도움
-- 실행 자체는 하지 않음 (가르침)
-- 예: SRE 실천 확산, DDD 도입 지원
+- Temporary **coaching and mentoring**
+- Helps Stream-aligned teams acquire new skills and practices
+- Does not execute itself (it teaches)
+- Examples: Spreading SRE practices, supporting DDD adoption
 
 ### 3. Complicated Subsystem Team
-- **깊은 전문지식 필요** 영역
-- ML·영상 처리·결제 코어·암호학 등
-- Stream-aligned 팀의 부하를 줄임
-- 작게 유지 (5~9명)
+- Areas requiring **deep expertise**
+- ML, video processing, payment core, cryptography, etc.
+- Reduces the load on Stream-aligned teams
+- Kept small (5-9 members)
 
 ### 4. Platform Team
-- 내부 **플랫폼 제공**
-- CI/CD, 관측, 인프라, 공통 라이브러리
-- "Platform as a Product" — 내부 사용자 만족이 KPI
-- Stream-aligned 팀이 *self-service*로 쓰게
+- Provides **internal platforms**
+- CI/CD, observability, infrastructure, shared libraries
+- "Platform as a Product" — internal user satisfaction is the KPI
+- Designed so Stream-aligned teams use it in a *self-service* manner
 
-## 3가지 상호작용 모드
+## The 3 Interaction Modes
 
 ### Collaboration
-- 두 팀이 밀접 협력, 경계 혼합
-- 새 기술·복잡한 문제 탐색 시
-- 고비용. 단기에만.
+- Two teams work closely together, with blurred boundaries
+- When exploring new technology or complex problems
+- High-cost. Short-term only.
 
 ### X-as-a-Service
-- 한 팀이 "서비스" 제공, 다른 팀이 "소비"
-- 명확한 인터페이스·계약
-- 가장 저비용·지속 가능 모드
-- Platform Team의 기본 모드
+- One team provides a "service," another team "consumes" it
+- Clear interfaces and contracts
+- The lowest-cost and most sustainable mode
+- Default mode for Platform Teams
 
 ### Facilitating
-- Enabling Team이 다른 팀을 돕는 관계
-- 일시적, 가르침 중심
+- A relationship where an Enabling Team helps another team
+- Temporary, teaching-centered
 
-팀 간 관계는 항상 이 셋 중 하나로 *명시적*이어야 함. "그냥 가끔 협업" = 불분명 = 마찰.
+Inter-team relationships must always be *explicitly* one of these three. "Just collaborating occasionally" = ambiguous = friction.
 
-## 인지 부하 (Cognitive Load)
+## Cognitive Load
 
-- 팀이 감당할 수 있는 복잡도는 한계 있음
-- 3종 부하: 내재적(도메인 본질) / 외재적(나쁜 도구) / 연관적(학습 활동)
-- **외재적 부하를 제거**하고 연관적 부하에 여유 남겨라
-- 팀이 담당 영역이 너무 넓으면 → 분할, Platform·Complicated Subsystem 팀이 흡수
+- There's a limit to the complexity a team can handle
+- 3 types of load: intrinsic (essence of the domain) / extraneous (bad tooling) / germane (learning activities)
+- **Eliminate extraneous load** and leave room for germane load
+- If a team's scope is too broad → split it, have Platform or Complicated Subsystem teams absorb parts
 
-## 언제 쓰나
+## When to Use
 
-- 조직이 20명·50명·200명 티어 넘을 때 재편
-- 모노리스 → 마이크로서비스 이행 시 팀 설계
-- 플랫폼 엔지니어링 조직 신설
-- 속도 저하·팀 간 대기 시간 증가 진단
-- DevOps 성숙 단계 평가
+- When reorganizing as the organization crosses 20, 50, or 200-person tiers
+- When designing teams during a monolith → microservices transition
+- When establishing a new platform engineering organization
+- Diagnosing slowdowns or increased waiting time between teams
+- Assessing DevOps maturity stage
 
-## 실전 적용
+## Practical Application
 
-### 팀 구성 체크리스트
-- [ ] 한 팀당 **2~8명** (Amazon 2-pizza team)
-- [ ] 한 팀이 **하나의 가치 스트림** 담당
-- [ ] 팀 간 **의존성 수**가 명시적으로 보임 (가급적 3~4개 이하)
-- [ ] 각 팀의 **인지 부하**가 감당 가능한가
-- [ ] Platform Team이 있으면 "Platform as a Product"로 운영되는가
+### Team Composition Checklist
+- [ ] **2-8 members** per team (Amazon 2-pizza team)
+- [ ] One team handles **one value stream**
+- [ ] The **number of dependencies** between teams is explicitly visible (ideally 3-4 or fewer)
+- [ ] Each team's **cognitive load** is manageable
+- [ ] If a Platform Team exists, is it operated as "Platform as a Product"?
 
-### Inverse Conway Maneuver 예시
+### Inverse Conway Maneuver Example
 
-**목표 아키텍처**: 결제·주문·재고가 독립 배포되는 모듈러 모노 + 마이크로
+**Target architecture**: A modular monolith + microservices where payment, orders, and inventory deploy independently
 
-**조직 개편**:
-- 결제 Stream-Aligned Team
-- 주문 Stream-Aligned Team
-- 재고 Stream-Aligned Team
-- Platform Team (CI/CD·관측·DB as a Service)
-- Payment Core Complicated Subsystem Team (PCI·인증·정산 로직)
-- 필요 시 Enabling Team (SRE 확산)
+**Organizational restructuring**:
+- Payment Stream-Aligned Team
+- Orders Stream-Aligned Team
+- Inventory Stream-Aligned Team
+- Platform Team (CI/CD, observability, DB as a Service)
+- Payment Core Complicated Subsystem Team (PCI, authentication, settlement logic)
+- Enabling Team if needed (SRE diffusion)
 
-→ 6개월 운영 후 서비스 경계가 *팀 경계를 따라* 자연스럽게 형성됨.
+→ After 6 months of operation, service boundaries naturally form *following team boundaries*.
 
-### 팀 API
+### Team API
 
-각 팀이 다음을 공개:
-- 소유한 시스템·서비스
-- 팀 사용 방법 (상호작용 모드·SLA)
-- 로드맵·현재 우선순위
-- 연락처·온콜 정보
+Each team publishes:
+- Owned systems and services
+- How to engage with the team (interaction modes, SLAs)
+- Roadmap and current priorities
+- Contact info, on-call information
 
-## 안티패턴
+## Anti-Patterns
 
-- **기능별 팀 사일로** — "프론트 팀 / 백엔드 팀 / DB 팀"은 stream 방해
-- **"Infra 팀에 이슈 던지기"** — X-as-a-Service 아닌 ticket 지옥
-- **Platform이 제품이 아닌 경우** — 팀이 쓰기 싫어하면 platform 아님
-- **모든 팀이 collaboration 모드** — 협업 피로 누적
-- **팀 경계 없이 마이크로서비스** — Conway의 역으로 실패
-- **Complicated Subsystem 팀의 블랙박스화** — 소통 안 하면 병목
+- **Functional team silos** — "Frontend team / Backend team / DB team" disrupts streams
+- **"Throw issues at the Infra team"** — Ticket hell instead of X-as-a-Service
+- **When Platform isn't a product** — If teams don't want to use it, it's not a platform
+- **All teams in collaboration mode** — Collaboration fatigue accumulates
+- **Microservices without team boundaries** — Fails via the inverse of Conway
+- **Complicated Subsystem team becomes a black box** — Becomes a bottleneck without communication
 
-## 한계
+## Limitations
 
-1. **조직 정치 수반** — 팀 재편은 권력·예산 이슈
-2. **Dunbar 제약** — 50명+ 조직에서 모든 상호작용 파악은 한계
-3. **스타트업 초기엔 과함** — 5~15명 팀이 전체인 단계엔 다 한 팀
-4. **고정 분류의 함정** — 팀이 변함에 따라 유형·모드 진화해야
-5. **책이 솔루션 제공 아님** — 진단 도구 + 어휘. 적용은 맥락에 맞게.
+1. **Involves organizational politics** — Team reorganization raises power and budget issues
+2. **Dunbar constraint** — In 50+ person organizations, grasping all interactions has limits
+3. **Overkill in early startups** — At the 5-15 person stage where the team is the whole org, it's all one team
+4. **Trap of fixed classification** — Types and modes must evolve as teams change
+5. **The book isn't a solution** — It's a diagnostic tool + vocabulary. Application requires context.
 
-## 한국 조직 맥락 흔한 실패
+## Common Failures in Korean Organizational Context
 
-- **"플랫폼 본부·개발 본부"식 기능 사일로** — 토스·네이버·카카오가 공통으로 겪은 초기 함정. Stream-aligned 부재 → 모든 프로젝트가 본부 3~4개 핸드오프.
-- **"TF(Task Force) 남발"** — 영구적 팀 경계를 못 긋고 TF로 대체 → 소속 모호·책임 분산. Stream-aligned 팀은 *영구 구조*여야 함.
-- **창업 멤버·시니어의 광역 소유권** — "A, B, C 모듈 다 아는 사람"이 있으면 역 Conway 적용 시 정치적 저항 발생. 면담·재배치 계획 선행.
-- **"플랫폼 실(Platform Team)이 ticket queue"** — Platform as a Product 실패. 셀프서비스 API·문서·SLA 없으면 병목. 토스·쿠팡 사례 다수.
-- **팀장·파트장 계층 과다** — 한국 대기업은 TL→파트장→팀장→실장→본부장까지. 의사결정 위임 매트릭스 없으면 모든 결정이 위로.
-- **연봉·평가 제도가 기능별 사일로 강화** — "프론트 평가는 프론트 팀에서"가 stream-aligned 형성 방해. HR·평가 제도 동반 설계 필요.
-- **조직도 먼저 확정하고 사람 끼워넣기** — 한국식 "인사 발표" 방식은 Team Topologies와 충돌. 팀 설계 → 의향 수렴 → 확정이 순서.
+- **Functional silos like "Platform Division / Development Division"** — A common early-stage trap for Toss, Naver, and Kakao. Absence of Stream-aligned teams → every project requires 3-4 division handoffs.
+- **"TF (Task Force) overuse"** — Failing to draw permanent team boundaries and substituting with TFs → ambiguous belonging and diffused responsibility. Stream-aligned teams must be a *permanent structure*.
+- **Wide ownership by founding members and seniors** — If someone "knows modules A, B, and C," applying Inverse Conway triggers political resistance. Interviews and relocation plans must come first.
+- **"Platform Office (Platform Team) as a ticket queue"** — Platform as a Product failure. Without self-service APIs, documentation, and SLAs, it becomes a bottleneck. Many cases at Toss and Coupang.
+- **Excessive team lead / part lead hierarchy** — Korean large companies have TL → Part Lead → Team Lead → Office Head → Division Head. Without a decision delegation matrix, every decision escalates upward.
+- **Compensation and evaluation systems reinforce functional silos** — "Frontend is evaluated by the frontend team" hinders stream-aligned formation. HR and evaluation systems must be designed concurrently.
+- **Finalizing the org chart first and slotting people in** — The Korean-style "HR announcement" conflicts with Team Topologies. The order should be: team design → gathering intentions → finalization.
 
-## 이 프레임워크와 함께 쓰는 것들
+## Frameworks to Use Alongside This
 
-- `modular-monolith` — 모듈 경계 = 팀 경계 (Conway)
-- `ddd` — bounded context = stream-aligned 팀 범위
-- `strangler-fig` — 레거시 분할 시 팀 재편과 연동
-- `observability` — Platform Team의 대표 서비스
+- `modular-monolith` — Module boundaries = team boundaries (Conway)
+- `ddd` — bounded context = stream-aligned team scope
+- `strangler-fig` — Links team reorganization with legacy decomposition
+- `observability` — A flagship service for Platform Teams
 
-## 이 프레임워크가 *틀렸을 때*
+## When This Framework Is *Wrong*
 
-- 10명 이하 조직 — 단일 팀으로 충분
-- 극단적 고전문가 집단 (R&D·리서치) — 유동적 조직이 나을 수 있음
-- 조직 설계 권한 없는 상태에서 "이렇게 해야" — 정치 없이 추진 불가
+- Organizations of 10 or fewer — A single team suffices
+- Extremely highly specialized groups (R&D, research) — A fluid organization may work better
+- When you lack organizational design authority and say "we should do this" — Can't push through without politics
 
-## 추가 학습
+## Further Learning
 
-- Skelton, M. & Pais, M. *Team Topologies.* (원전, 짧고 실용적)
-- teamtopologies.com — 공식 리소스·도식
-- Forsgren, N. et al. *Accelerate.* — DORA 지표와 팀 설계 연결
-- Kim, G. et al. *The Phoenix Project*·*The DevOps Handbook.* — DevOps 조직 이론적 배경
+- Skelton, M. & Pais, M. *Team Topologies.* (The original, short and practical)
+- teamtopologies.com — Official resources and diagrams
+- Forsgren, N. et al. *Accelerate.* — Connects DORA metrics to team design
+- Kim, G. et al. *The Phoenix Project* & *The DevOps Handbook.* — Theoretical DevOps organizational background
