@@ -8,7 +8,7 @@
   },
   "homepage": "https://github.com/ironyjk/software-framework",
   "repository": "https://github.com/ironyjk/software-framework",
-  "license": "CC-BY-NC-4.0",
+  "license": "MIT",
   "keywords": [
     "software-engineering",
     "ddd",
