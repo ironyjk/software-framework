@@ -1,41 +1,18 @@
 ---
 name: event-sourcing-cqrs
-version: "0.1.0"
+version: "0.2.0"
 description: "Event Sourcing + CQRS (Greg Young) — store events instead of state; state is a fold of events. Separate write and read models. Powerful for financial ledgers, auditing, time travel, and offloading read workloads."
 ---
 
 # Event Sourcing + CQRS
 
+> **Background and theory**: Read [references/foundation.md](references/foundation.md)
+
+
 ## One-Line Summary
 
 **State = Fold(Events)**. Don't store current state — store the *events that changed state*. Reads are projected into separate, optimized models (projections).
 
-## Theoretical Origins
-
-- **Greg Young** — formalized CQRS (2010s). ES itself has older roots (accounting ledgers, SCM).
-- **Martin Fowler** — articulated Event Sourcing.
-- **Udi Dahan** — combined it with SOA and message-based design.
-- Roots: double-entry bookkeeping in accounting. Record "transactions," not "balances."
-
-## Two Concepts (Usable Independently)
-
-### Event Sourcing (ES)
-- Writes = append events
-- State = fold over events
-- Event Store = immutable, append-only log
-- Pros: complete audit trail, time travel (rebuild to any point), natural fit for domain events
-- Cons: schema evolution is complex, querying is hard
-
-### CQRS (Command Query Responsibility Segregation)
-- Separate Command (write) model vs. Query (read) model
-- Each can use different DBs, schemas, and consistency models
-- Pros: read optimization, independent scaling, team separation
-- Cons: eventual consistency, synchronization complexity
-
-### Combining Both
-- ES is the source of truth
-- CQRS read models subscribe to events and stay up to date
-- Extremely powerful — extremely complex
 
 ## When to Use
 
@@ -53,6 +30,7 @@ description: "Event Sourcing + CQRS (Greg Young) — store events instead of sta
 - **Virtual Asset Service Providers (VASPs)** — the Specific Financial Information Act mandates transaction record retention and submission
 - **Insurance and securities sales logs** — record retention obligations under the Capital Markets Act and the Insurance Business Act
 - **Toss, KakaoPay, Naver Pay case studies** — user balance and transaction queries are projections; the ledger is append-only
+
 
 ## Applied in Practice
 
@@ -82,12 +60,6 @@ Read models (each projected independently):
 - *Replayable* — if the schema changes, rebuild from scratch
 - Eventually consistent (lag of a few ms to seconds)
 
-## Schema Evolution
-
-- Events are *facts that already happened* → immutable
-- To add new fields: versioning (`OrderPlacedV1`, `V2`)
-- Upcasting: transform old events into the latest shape when reading
-- *Never rename or delete events* — manage via a compatibility layer
 
 ## Concurrency and Consistency Models
 
@@ -99,6 +71,7 @@ Read models (each projected independently):
 - **Projection rebuild** — full event replay on schema change. At scale, can take hours to days. Requires parallel projectors + partitioning.
 - **From a CAP perspective** — ES leans AP (writes are available, read projections are eventually consistent).
 
+
 ## Anti-Patterns
 
 - **CQRS without Event Sourcing** — common. Simple read-model separation is fine as "CQRS-lite."
@@ -108,6 +81,7 @@ Read models (each projected independently):
 - **Query models that also write** — violates CQRS, leads to consistency hell.
 - **Long histories without snapshots** — Aggregate reconstruction cost balloons.
 
+
 ## Limitations
 
 1. **Steep learning curve** — the entire team's mental model must shift
@@ -116,21 +90,16 @@ Read models (each projected independently):
 4. **Eventually consistent UX** — handling users who say "I just paid but my balance hasn't changed"
 5. **Overkill for small teams and simple domains**
 
+
 ## What to Use Alongside This Framework
 
 - `ddd` — domain events are ES events. They pair naturally.
 - `resilience-patterns` — managing the side effects of async and eventual consistency
 - `observability` — monitoring projection lag and event backlog
 
+
 ## When This Framework Is *Wrong*
 
 - Simple CRUD → over-application
 - Strict immediate consistency required (e.g., medical dosing records) → ES is possible, but requires synchronous projections
 - Low-load, early-stage MVP → ES's audit value < complexity cost
-
-## Further Reading
-
-- Young, G. "CQRS Documents" (PDF, free).
-- Dahan, U. — blog and NServiceBus materials.
-- Vernon, V. *Implementing Domain-Driven Design.* Ch. 8.
-- EventStoreDB documentation (eventstore.com).

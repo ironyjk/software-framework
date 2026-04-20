@@ -1,31 +1,18 @@
 ---
 name: scientific-debugging
-version: "0.1.0"
+version: "0.2.0"
 description: "Scientific Debugging — hypothesis-driven debugging. Treat bugs not as mysteries but as a chain of falsifiable hypotheses. Observation→Hypothesis→Experiment→Verification loop. Based on Zeller's *Why Programs Fail*."
 ---
 
 # Scientific Debugging
 
+> **Background and theory**: Read [references/foundation.md](references/foundation.md)
+
+
 ## One-Line Summary
 
 A bug is a **chain of falsifiable hypotheses**. Observe → hypothesize → predict → experiment → verify → fix and repeat. Don't dig in based on "gut feeling" — always be conscious of *what the next experiment will rule out*.
 
-## Theoretical Origins
-
-- **Andreas Zeller** — *Why Programs Fail: A Guide to Systematic Debugging* (2005)
-- **David Agans** — *Debugging: 9 Indispensable Rules* (2002)
-- Applying the scientific method (Popper) to software. "Falsification over confirmation."
-
-## Core Loop
-
-```
-1. Observation    — Describe the failure symptom precisely
-2. Hypothesis     — Candidate cause (must be testable)
-3. Prediction     — If the hypothesis is true, X will be observed
-4. Experiment     — Test the prediction at minimum cost
-5. Observation    — Prediction vs. reality
-6. Keep/Discard and repeat — Narrow down the hypothesis tree
-```
 
 ## 12 Core Habits
 
@@ -42,6 +29,7 @@ A bug is a **chain of falsifiable hypotheses**. Observe → hypothesize → pred
 11. **Debugger ≠ always required** — Sometimes print + logs are faster
 12. **After the fix, "why did it happen?"** — Document the root cause after fixing (5 Whys)
 
+
 ## When to Use
 
 - Tracing the cause of a reproducible bug
@@ -49,6 +37,7 @@ A bug is a **chain of falsifiable hypotheses**. Observe → hypothesize → pred
 - Investigating unexpected behavior
 - Exploring the cause of performance degradation (together with `observability`)
 - Narrowing the conditions of intermittent failures
+
 
 ## Practical Application
 
@@ -72,6 +61,7 @@ Symptom: Payments intermittently fail
 ### Key: *Start with experiments that have the lowest falsification cost*
 Example: log grep < metric dashboard < rebuilding reproduction environment < production A/B
 
+
 ## Anti-Patterns
 
 - **Shotgun debugging** — "Let's just change anything"
@@ -80,6 +70,7 @@ Example: log grep < metric dashboard < rebuilding reproduction environment < pro
 - **Confirmation bias** — Collecting only evidence that *confirms* your hypothesis
 - **Premature abstraction** — Changing structure without knowing the cause
 
+
 ## Limitations
 
 1. **Non-reproducible bugs** — In flaky tests and race conditions, the cost of verifying hypotheses skyrockets
@@ -87,14 +78,9 @@ Example: log grep < metric dashboard < rebuilding reproduction environment < pro
 3. **Time pressure** — During service outages, sometimes "stopgap first, analysis later" is chosen
 4. **Cognitive bias** — Hypothesis diversity drops in familiar code
 
+
 ## When This Framework Is *Wrong*
 
 - Need to trace the failing commit → `bisection`
 - Observing distributed systems → `observability`
 - Preventing cascading failures → `resilience-patterns`
-
-## Further Learning
-
-- Zeller, A. *Why Programs Fail.*
-- Agans, D. *Debugging.* (a quick-reading textbook)
-- Allspaw, J. *Blameless PostMortems and a Just Culture.* (web)

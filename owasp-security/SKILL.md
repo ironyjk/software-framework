@@ -1,21 +1,18 @@
 ---
 name: owasp-security
-version: "0.1.0"
+version: "0.2.0"
 description: "OWASP Top 10 — the 10 most critical web application security risks. SQL Injection, XSS, broken auth, security misconfiguration, and more. Essential checklist for every web app, especially for non-developers using AI to build apps."
 ---
 
 # OWASP Security Framework
 
+> **Background and theory**: Read [references/foundation.md](references/foundation.md)
+
+
 ## One-Line Summary
 
 **The 10 most dangerous security mistakes in web apps — a checklist every builder must run before shipping, especially if AI wrote your code.**
 
-## Theoretical Origin
-
-- **OWASP Foundation** (Open Web Application Security Project) — non-profit, founded 2001.
-- OWASP Top 10 has been the industry's standard security checklist since 2003, updated every few years.
-- The 2021 edition (current as of 2026) is based on CVE data, community surveys, and real breach analysis.
-- Referenced by NIST, PCI-DSS, ISO 27001, and most compliance frameworks worldwide.
 
 ## OWASP Top 10 (2021 Edition)
 
@@ -164,6 +161,7 @@ Example: Your app has a feature "fetch this URL for me". Attacker sends `http://
 
 ---
 
+
 ## Vibe Coder Danger Zone
 
 These are the mistakes AI-generated code most commonly makes:
@@ -221,6 +219,7 @@ AI가 생성한 보안 코드는 반드시 "이 방법이 최신인가?" 확인.
 
 ---
 
+
 ## Secret Management Primer
 
 | Stage | Solution | Notes |
@@ -235,6 +234,7 @@ Rule of thumb: If you can see the secret value in your source code, it's wrong.
 Applies to ALL credentials: API keys, DB connection strings, OAuth secrets, webhook URLs, encryption keys.
 
 ---
+
 
 ## Authentication / Authorization Basics
 
@@ -257,6 +257,7 @@ If you must roll your own:
 
 ---
 
+
 ## Anti-Patterns
 
 - **"Security theater"** — changing the admin URL to `/xk923admin` instead of requiring authentication
@@ -264,6 +265,7 @@ If you must roll your own:
 - **Overly verbose error messages** — `"User 'john@example.com' does not exist"` tells attackers which emails are registered
 - **"We're too small to be attacked"** — automated bots attack everything. Size doesn't matter.
 - **Security audit once, done forever** — dependencies get vulnerabilities over time. Schedule recurring checks.
+
 
 ## Over-Application Warning
 
@@ -277,6 +279,7 @@ Security is important, but paralysis is also a failure mode:
 The right question is not "Is this perfectly secure?" but "Is this secure *enough* for the current stage and risk level?"
 
 ---
+
 
 ## Practical Checklist (Ship-Time)
 
@@ -297,6 +300,7 @@ Before going live, run this:
 
 ---
 
+
 ## Limitations
 
 1. **OWASP Top 10 is not exhaustive** — it covers the most common, not all possible vulnerabilities
@@ -304,15 +308,9 @@ Before going live, run this:
 3. **Compliance ≠ Security** — passing a PCI-DSS audit doesn't mean you're actually secure
 4. **Social engineering and phishing** — outside technical OWASP scope, but the most common real-world attack vector
 
+
 ## Related Frameworks
 
 - `twelve-factor` — Factor III (Config) directly addresses secret management
 - `hexagonal` — isolating I/O at boundaries makes injection attacks easier to contain
 - `observability` — A09 (Logging/Monitoring) is a shared concern
-
-## Further Reading
-
-- **Primary source**: owasp.org/Top10 (free, short)
-- **NIST Cybersecurity Framework**: nist.gov/cyberframework
-- *The Web Application Hacker's Handbook* (Stuttard & Pinto) — deeper technical reference
-- **OWASP Cheat Sheet Series**: cheatsheetseries.owasp.org — concrete implementation guidance per topic

@@ -1,55 +1,18 @@
 ---
 name: solid
-version: "0.1.0"
+version: "0.2.0"
 description: "SOLID Principles (Robert Martin) — SRP/OCP/LSP/ISP/DIP. Classic principles of OO design. Includes warnings against over-application. References Dan North's CUPID alternative."
 ---
 
 # SOLID Principles
 
+> **Background and theory**: Read [references/foundation.md](references/foundation.md)
+
+
 ## One-Line Summary
 
 Five principles of object-oriented design. **A thinking tool for building code that is resilient to change.** However, forcing code to conform to the principles backfires. The principles are a *lens for reducing pain*, not a checklist.
 
-## Theoretical Origins
-
-- **Robert C. Martin (Uncle Bob)** — Formulated in the 1990s~early 2000s; the SOLID acronym was finalized in 2003's *Agile Software Development, Principles, Patterns, and Practices*. The acronym SOLID itself was proposed by Michael Feathers.
-- Origins of individual principles:
-  - **SRP**: Parnas, D. "On the Criteria to Be Used in Decomposing Systems into Modules." *CACM* (1972). The prototype for "information hiding" and "separation of reasons for change."
-  - **OCP**: Meyer, B. *Object-Oriented Software Construction* (1988). The original was inheritance-based; Martin reinterpreted it on a polymorphism (interface) basis.
-  - **LSP**: Liskov, B. "Data Abstraction and Hierarchy." *OOPSLA* (1987) keynote, and Liskov & Wing, "A Behavioral Notion of Subtyping." *TOPLAS* (1994).
-  - **ISP, DIP**: Formulated by Martin himself from his 1990s Xerox and Object Mentor consulting experience.
-
-## The Five Principles
-
-### S — Single Responsibility Principle (SRP)
-**"A class should have only one reason to change."**
-- Not "it does one thing." Rather, *one stakeholder/axis of change*
-- Example: If a Report class holds both "calculation logic" and "output format" → separate them
-- Practical signal: Commit messages reading "changed because of A + changed because of B"
-
-### O — Open/Closed Principle (OCP)
-**"Software entities should be open for extension but closed for modification."**
-- Adding new behavior must be possible *without touching existing code*
-- Techniques: polymorphism, strategy pattern, plugin architecture
-- In practice: frequently growing switch/if-else branches are a signal of OCP violation
-
-### L — Liskov Substitution Principle (LSP)
-**"Subtypes must be substitutable for their base types without breaking them."**
-- A child must not violate its parent's contract
-- Classic example: the Square extends Rectangle failure case
-- In practice: needing an `if (x instanceof Special)` branch = LSP violation
-
-### I — Interface Segregation Principle (ISP)
-**"Clients should not be forced to depend on interfaces they do not use."**
-- Fat interface → split into smaller role-specific interfaces
-- Example: `Worker { work(), eat() }` → a Robot doesn't need eat() → split them
-- In practice: implementing an interface with no-op or throw in unused methods is a violation
-
-### D — Dependency Inversion Principle (DIP)
-**"High-level modules should not depend on low-level modules; both should depend on abstractions."**
-- Depend on interfaces, not concrete classes
-- Closely related to DI (Dependency Injection) (DIP is the principle, DI is the technique)
-- The theoretical foundation of `hexagonal` Architecture
 
 ## When to Use
 
@@ -58,6 +21,7 @@ Five principles of object-oriented design. **A thinking tool for building code t
 - As a *discussion tool* in code review
 - When judging refactoring direction
 - When cleaning up code that is hard to test
+
 
 ## Situations Where SOLID Becomes the *Primary* Framework (Not Architectural Level)
 
@@ -89,6 +53,7 @@ Approach:
 Result: 2,400 lines → 10 classes averaging 200 lines + interfaces + fakes
 ```
 
+
 ## Practical Tips
 
 ### Use as a Lens
@@ -102,6 +67,7 @@ Result: 2,400 lines → 10 classes averaging 200 lines + interfaces + fakes
 - LSP matters only when using inheritance.
 - ISP triggers when a large interface has emerged and needs splitting.
 
+
 ## Anti-patterns & Over-application
 
 - **Classes made extremely small** — SRP over-application. Dozens of 10-line files are harder to read
@@ -110,16 +76,6 @@ Result: 2,400 lines → 10 classes averaging 200 lines + interfaces + fakes
 - **SOLID = the right refactor answer** — No. Tolerating duplication is often better (Rule of Three)
 - **Name-dropping principles with vague application** — saying only "SRP violation" in code review ends the discussion. You must point to a concrete axis of change
 
-## Dan North's CUPID Alternative (2022)
-
-If SOLID feels excessive:
-- **C**omposable
-- **U**nix philosophy
-- **P**redictable
-- **I**diomatic
-- **D**omain-based
-
-CUPID is "property"-based; SOLID is "rule"-based. They are not mutually exclusive.
 
 ## Limitations
 
@@ -128,21 +84,16 @@ CUPID is "property"-based; SOLID is "rule"-based. They are not mutually exclusiv
 3. **Tempts the "solve with inheritance" trap** — the mistake of using inheritance because of LSP
 4. **Not a business problem** — what the domain structure should be belongs to `ddd`
 
+
 ## Frameworks to Use Alongside This One
 
 - `hexagonal` — the natural consequence of DIP
 - `ddd` — the domain version of SRP (Aggregate boundaries)
 - `solid` is at the *code level*; `hexagonal` and `ddd` are at the *structural level*
 
+
 ## When This Framework Is *Wrong*
 
 - Short-term scripts/prototypes → over-application
 - Procedural/functional code → different principles
 - Domain boundary problems → `ddd`
-
-## Further Learning
-
-- Martin, R. *Agile Software Development, Principles, Patterns, and Practices.* (the original)
-- Martin, R. *Clean Architecture.* (the expanded version)
-- North, D. "CUPID — for joyful coding" (blog, 2022).
-- Freeman & Pryce. *Growing Object-Oriented Software, Guided by Tests.* (practical application)

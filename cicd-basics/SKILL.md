@@ -1,44 +1,18 @@
 ---
 name: cicd-basics
-version: "0.1.0"
+version: "0.2.0"
 description: "CI/CD Basics — Continuous Integration and Continuous Deployment fundamentals. GitHub Actions, Docker basics, deployment strategies (blue-green, canary), environment management. The minimum viable DevOps for solo developers and small teams."
 ---
 
 # CI/CD Basics
 
+> **Background and theory**: Read [references/foundation.md](references/foundation.md)
+
+
 ## One-Line Summary
 
 **Automate the path from "code written" to "code running in production" — catching bugs earlier, deploying faster, and removing the terror of manual releases.**
 
-## Theoretical Origin
-
-- **Continuous Integration** coined by Grady Booch (1991), popularized by Kent Beck and Extreme Programming (1999).
-- **Continuous Delivery** formalized by Jez Humble and David Farley in *Continuous Delivery* (2010).
-- **DORA research** (Forsgren et al., *Accelerate*, 2018) quantified the business impact: elite CI/CD teams deploy 208× more frequently with 2,604× faster recovery.
-- **The Phoenix Project** (Kim et al., 2013) — fictional but influential narrative of a company transforming from quarterly releases to daily deploys.
-
----
-
-## Core Concepts, Explained Simply
-
-### What is CI?
-**Continuous Integration** = Every time a developer pushes code, automated tests run immediately.
-
-Without CI: "We'll integrate everyone's code on Friday." → Friday is a disaster.
-With CI: Bad code is caught within minutes, not days.
-
-### What is CD?
-**Continuous Delivery** = After tests pass, the code is *ready* to deploy at any moment (a human clicks the button).
-**Continuous Deployment** = After tests pass, code deploys *automatically* to production (no human button).
-
-Most small teams want Continuous Delivery, not full Deployment. The distinction matters.
-
-### Why does it matter for non-developers?
-- "The app update we shipped last week broke login" → CI would have caught it before shipping
-- "I'm scared to deploy" → automated pipeline makes deploys boring (which is good)
-- "We deploy once a month" → DORA research shows quarterly deployments correlate with lower organizational performance
-
----
 
 ## GitHub Actions — The Minimum Viable CI
 
@@ -106,6 +80,7 @@ This runs on every push. If tests fail, the PR shows a red X. Simple and effecti
 
 ---
 
+
 ## Docker Basics — Why Containers?
 
 ### The problem Docker solves
@@ -158,6 +133,7 @@ For Vercel/Netlify (frontend), you don't need Docker — they handle it. Docker 
 
 ---
 
+
 ## Deployment Strategies
 
 ### 1. Manual Deploy (Stage 0)
@@ -198,6 +174,7 @@ Tools: LaunchDarkly, Unleash, Flagsmith, or simple DB-backed flags.
 
 ---
 
+
 ## Environment Management
 
 Three environments is the classic setup:
@@ -228,6 +205,7 @@ Never commit `.env` files. Use platform environment variable settings (Vercel, R
 
 ---
 
+
 ## PaaS Options (The Vibe Coder's Real Choice)
 
 For solo developers and small teams, managed platforms eliminate most DevOps complexity:
@@ -246,6 +224,7 @@ These platforms handle: SSL certificates, HTTPS, auto-deploys from GitHub, envir
 **Recommendation for < 5-person teams**: Start with Vercel/Railway/Render. Only move to self-managed when you have a specific reason (cost at scale, compliance, unusual architecture).
 
 ---
+
 
 ## Health Check Endpoint
 
@@ -273,6 +252,7 @@ Why it matters:
 
 ---
 
+
 ## Connecting to 12-Factor
 
 CI/CD operationalizes the 12-Factor principles:
@@ -287,6 +267,7 @@ CI/CD operationalizes the 12-Factor principles:
 
 ---
 
+
 ## Stage-Default Recommendations
 
 | Team size | Default setup |
@@ -297,6 +278,7 @@ CI/CD operationalizes the 12-Factor principles:
 | **20+ people** | Above + Docker Compose or managed Kubernetes (EKS, GKE) |
 
 ---
+
 
 ## DORA Metrics — How to Measure
 
@@ -313,6 +295,7 @@ You don't need to be "elite" immediately. Moving from monthly to weekly is alrea
 
 ---
 
+
 ## Anti-Patterns
 
 - **"Manual deploy is faster"** — true for the 10th deploy, false for the 100th. Automate before you regret it.
@@ -321,6 +304,7 @@ You don't need to be "elite" immediately. Moving from monthly to weekly is alrea
 - **Long-lived feature branches** — the longer you wait to merge, the more painful integration is. Merge at least weekly.
 - **K8s for a 3-person startup** — Kubernetes adds 20–40 hours of ops overhead per month. Justify it first.
 - **Skipping staging** — deploying straight to prod with no testing environment. Fine for personal projects, dangerous with real users.
+
 
 ## Over-Application Warning
 
@@ -334,6 +318,7 @@ The goal of CI/CD is confidence and speed, not infrastructure complexity.
 
 ---
 
+
 ## Limitations
 
 1. **Tests are the hard part** — CI is only as good as your test suite. No tests = CI just checks "does it compile?"
@@ -341,16 +326,9 @@ The goal of CI/CD is confidence and speed, not infrastructure complexity.
 3. **Not a substitute for monitoring** — deploys can succeed and still have bugs in production (observability still needed)
 4. **Database migrations** — the hardest part of CI/CD for stateful apps; blue-green breaks if migrations aren't backward-compatible
 
+
 ## Related Frameworks
 
 - `twelve-factor` — V (Build/Release/Run), III (Config), XI (Logs) are directly CI/CD-relevant
 - `observability` — what you monitor after a deployment
 - `resilience-patterns` — blue-green and feature flags are resilience tools too
-
-## Further Reading
-
-- Humble, J. & Farley, D. *Continuous Delivery.* (Addison-Wesley, 2010) — the definitive text
-- Kim, G. et al. *The Phoenix Project.* (IT Revolution, 2013) — narrative entry point
-- Forsgren, N. et al. *Accelerate.* (IT Revolution, 2018) — the data behind DORA metrics
-- **DORA State of DevOps Report**: dora.dev (annual, free)
-- **GitHub Actions documentation**: docs.github.com/en/actions

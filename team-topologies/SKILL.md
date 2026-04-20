@@ -1,78 +1,18 @@
 ---
 name: team-topologies
-version: "0.1.0"
+version: "0.2.0"
 description: "Team Topologies (Skelton & Pais) — 4 team types + 3 interaction modes + cognitive load + Inverse Conway Maneuver. Team structure shapes architecture. For team scaling, platformization, and microservices organization design."
 ---
 
 # Team Topologies
 
+> **Background and theory**: Read [references/foundation.md](references/foundation.md)
+
+
 ## One-Line Summary
 
 **Team structure determines software structure (Conway's Law).** So if you want a specific architecture, organize your teams accordingly first (Inverse Conway Maneuver). Explicitly design your organization using 4 team types and 3 interaction modes.
 
-## Theoretical Origins
-
-- **Matthew Skelton & Manuel Pais** — *Team Topologies* (2019). A consolidation of DevOps and agile organizational design.
-- Roots: Conway's Law (1968), Spotify Model, Dunbar's number.
-- Modern impact: Many tech companies have adopted it for platform engineering organizational design.
-
-## Conway's Law (The Premise)
-
-> "Any organization that designs a system will produce a design whose structure is a copy of the organization's communication structure." — Melvin Conway (1968)
-
-**Inverse proposition (Inverse Conway Maneuver)**: If you want a specific architecture, organize your teams into that structure first.
-
-## The 4 Team Types
-
-### 1. Stream-Aligned Team
-- A team **aligned to a single value stream**
-- End-to-end responsibility (design, development, deployment, operations)
-- *Most* of the product should reside here (70-80%)
-- Examples: "Payment team," "Search team," "Mobile iOS team"
-
-### 2. Enabling Team
-- Temporary **coaching and mentoring**
-- Helps Stream-aligned teams acquire new skills and practices
-- Does not execute itself (it teaches)
-- Examples: Spreading SRE practices, supporting DDD adoption
-
-### 3. Complicated Subsystem Team
-- Areas requiring **deep expertise**
-- ML, video processing, payment core, cryptography, etc.
-- Reduces the load on Stream-aligned teams
-- Kept small (5-9 members)
-
-### 4. Platform Team
-- Provides **internal platforms**
-- CI/CD, observability, infrastructure, shared libraries
-- "Platform as a Product" — internal user satisfaction is the KPI
-- Designed so Stream-aligned teams use it in a *self-service* manner
-
-## The 3 Interaction Modes
-
-### Collaboration
-- Two teams work closely together, with blurred boundaries
-- When exploring new technology or complex problems
-- High-cost. Short-term only.
-
-### X-as-a-Service
-- One team provides a "service," another team "consumes" it
-- Clear interfaces and contracts
-- The lowest-cost and most sustainable mode
-- Default mode for Platform Teams
-
-### Facilitating
-- A relationship where an Enabling Team helps another team
-- Temporary, teaching-centered
-
-Inter-team relationships must always be *explicitly* one of these three. "Just collaborating occasionally" = ambiguous = friction.
-
-## Cognitive Load
-
-- There's a limit to the complexity a team can handle
-- 3 types of load: intrinsic (essence of the domain) / extraneous (bad tooling) / germane (learning activities)
-- **Eliminate extraneous load** and leave room for germane load
-- If a team's scope is too broad → split it, have Platform or Complicated Subsystem teams absorb parts
 
 ## When to Use
 
@@ -81,6 +21,7 @@ Inter-team relationships must always be *explicitly* one of these three. "Just c
 - When establishing a new platform engineering organization
 - Diagnosing slowdowns or increased waiting time between teams
 - Assessing DevOps maturity stage
+
 
 ## Practical Application
 
@@ -113,6 +54,7 @@ Each team publishes:
 - Roadmap and current priorities
 - Contact info, on-call information
 
+
 ## Anti-Patterns
 
 - **Functional team silos** — "Frontend team / Backend team / DB team" disrupts streams
@@ -122,6 +64,7 @@ Each team publishes:
 - **Microservices without team boundaries** — Fails via the inverse of Conway
 - **Complicated Subsystem team becomes a black box** — Becomes a bottleneck without communication
 
+
 ## Limitations
 
 1. **Involves organizational politics** — Team reorganization raises power and budget issues
@@ -129,6 +72,7 @@ Each team publishes:
 3. **Overkill in early startups** — At the 5-15 person stage where the team is the whole org, it's all one team
 4. **Trap of fixed classification** — Types and modes must evolve as teams change
 5. **The book isn't a solution** — It's a diagnostic tool + vocabulary. Application requires context.
+
 
 ## Common Failures in Korean Organizational Context
 
@@ -140,6 +84,7 @@ Each team publishes:
 - **Compensation and evaluation systems reinforce functional silos** — "Frontend is evaluated by the frontend team" hinders stream-aligned formation. HR and evaluation systems must be designed concurrently.
 - **Finalizing the org chart first and slotting people in** — The Korean-style "HR announcement" conflicts with Team Topologies. The order should be: team design → gathering intentions → finalization.
 
+
 ## Frameworks to Use Alongside This
 
 - `modular-monolith` — Module boundaries = team boundaries (Conway)
@@ -147,15 +92,9 @@ Each team publishes:
 - `strangler-fig` — Links team reorganization with legacy decomposition
 - `observability` — A flagship service for Platform Teams
 
+
 ## When This Framework Is *Wrong*
 
 - Organizations of 10 or fewer — A single team suffices
 - Extremely highly specialized groups (R&D, research) — A fluid organization may work better
 - When you lack organizational design authority and say "we should do this" — Can't push through without politics
-
-## Further Learning
-
-- Skelton, M. & Pais, M. *Team Topologies.* (The original, short and practical)
-- teamtopologies.com — Official resources and diagrams
-- Forsgren, N. et al. *Accelerate.* — Connects DORA metrics to team design
-- Kim, G. et al. *The Phoenix Project* & *The DevOps Handbook.* — Theoretical DevOps organizational background

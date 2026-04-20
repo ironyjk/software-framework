@@ -4,7 +4,7 @@ version: "0.2.0"
 last_verified: "2026-04-17"
 valid_until: "2026-10-17"
 description: "Software engineering meta-router — auto-selects from 15 frameworks (debugging, architecture, design, resilience, evolution, team topology, security, CI/CD, API design). Real Korean growth scenarios (Toss, Kakao, Coupang, Naver), Korean financial regulatory context (FSC, 전자금융업, PG integration), legacy replacement, and team expansion. Includes anti-pattern warnings, stage-based defaults, and the Inverse Conway Maneuver."
-tools: ["Read", "Write", "Edit", "Skill"]
+tools: ["Read", "Write", "Edit", "Skill", "Agent"]
 dependencies:
   - scientific-debugging
   - bisection
@@ -108,6 +108,17 @@ Confirm or ask before analysis:
 - **Deploy frequency**: monthly / weekly / daily / hourly
 
 The same framework recommends differently by stage. DDD full-stack for an MVP team is over-application; for legacy reorganization, it's essential.
+
+
+## Execution Strategy
+
+1. **Route** -- classify the problem, select 1-3 sub-skills
+2. **Confirm** -- verify goal/level/context with the user before analysis
+3. **Execute** -- call sub-skills via the Skill tool (read their SKILL.md for execution protocol)
+4. **Synthesize** -- combine results, expose conflicts, give concrete next steps
+5. **Measure** -- propose 1-2 metrics to track over 4-12 weeks
+
+When a sub-skill needs background theory, read its `references/foundation.md`. Execute using its `SKILL.md`.
 
 ## Output format
 
