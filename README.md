@@ -57,6 +57,16 @@ The meta-router maps problem signals and selects 1–3 frameworks, then executes
 
 This repo is a design-support tool; it does not substitute for choosing a specific tech stack, vendor, or framework. Real systems involve trade-offs that vary by team size, domain, and regulations (e.g., Korean FSS electronic-finance requirements).
 
+## Attribution & Trademarks
+
+This project implements well-known software engineering frameworks for educational purposes. The following are acknowledged:
+
+- **OWASP®** and **OWASP Top 10** are registered trademarks of the OWASP Foundation (owasp.org).
+
+All other framework names reference published academic works and are used descriptively.
+
+This project is not affiliated with, endorsed by, or sponsored by any of the above trademark holders.
+
 ## License
 
 CC-BY-NC-4.0 — see [LICENSE](LICENSE) for details. Commercial licensing: ironyjk@gmail.com
